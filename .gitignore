@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Environment variables — NEVER upload this!
+.env
+
+# Upload folder — don't upload user images
+uploads/
+
+# Mac system file
+.DS_Store
+
+# Logs
+*.log
