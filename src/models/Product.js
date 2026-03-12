@@ -67,6 +67,18 @@ const Product = sequelize.define('Product', {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
+  // Add these two fields after the `isActive` field
+
+barcodeNumber: {
+  type: DataTypes.STRING(50),
+  allowNull: true,
+  unique: true,
+},
+
+barcodeUrl: {
+  type: DataTypes.STRING(255),
+  allowNull: true,
+},
 
   categoryId: {
     type: DataTypes.INTEGER,
