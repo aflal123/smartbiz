@@ -67,6 +67,7 @@ const createProduct = async (req, res) => {
 
     const image = req.file ? req.file.path : null;
 
+    // ── CREATE PRODUCT ────────────────────────────────
     const product = await Product.create({
       name: name.trim(),
       description: description?.trim(),
@@ -81,10 +82,21 @@ const createProduct = async (req, res) => {
       userId,
     });
 
+    // ── GENERATE BARCODE ──────────────────────────────
+    // Uses product ID to create unique barcode e.g. "PRD-000001"
+    const barcodeNumber = generateBarcodeNumber('product', product.id);
+    const { barcodeUrl } = await generateBarcodeImage(barcodeNumber, 'product');
+
+    // Save barcode back to product
+    await product.update({ barcodeNumber, barcodeUrl });
+
     return res.status(201).json({
       success: true,
       message: 'Product created successfully!',
-      product
+      product: {
+        ...product.toJSON(),
+        barcodeImageUrl: `${req.protocol}://${req.get('host')}/${barcodeUrl}`
+      }
     });
 
   } catch (error) {
@@ -241,6 +253,7 @@ const getLowStockProducts = async (req, res) => {
     return res.status(500).json({ success: false, message: 'Server error.' });
   }
 };
+
 
 module.exports = {
   createProduct, getProducts, getProduct,
