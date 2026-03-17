@@ -6,6 +6,7 @@ const {
   validateRequired,
   isPositiveNumber
 } = require('../utils/validate');
+const { generateBarcodeNumber, generateBarcodeImage } = require('../utils/barcode');
 
 const createProduct = async (req, res) => {
   try {
