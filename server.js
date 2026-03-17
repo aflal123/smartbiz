@@ -6,7 +6,8 @@ const sequelize = require('./src/config/database');
 const {
   User, Category, Product,
   Customer, Supplier,
-  Sale, SaleItem
+  Sale, SaleItem,
+  Expense             // 🆕
 } = require('./src/models');
 
 const PORT = process.env.PORT || 8000;
@@ -16,8 +17,6 @@ const startServer = async () => {
     await sequelize.authenticate();
     console.log('✅ Database connected successfully!');
 
-    // ✅ force: false → only creates tables that don't exist yet
-    // Never alters existing tables — no more duplicate indexes!
     await sequelize.sync({ force: false });
     console.log('✅ Database tables synced!');
 

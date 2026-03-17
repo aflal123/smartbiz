@@ -10,23 +10,26 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ── ROUTES ───────────────────────────────────────────
-const authRoutes     = require('./src/routes/auth.routes');
-const categoryRoutes = require('./src/routes/category.routes');
-const productRoutes  = require('./src/routes/product.routes');
-const customerRoutes = require('./src/routes/customer.routes');
-const supplierRoutes = require('./src/routes/supplier.routes');
-const saleRoutes     = require('./src/routes/sale.routes'); // 🆕
+const authRoutes      = require('./src/routes/auth.routes');
+const categoryRoutes  = require('./src/routes/category.routes');
+const productRoutes   = require('./src/routes/product.routes');
+const customerRoutes  = require('./src/routes/customer.routes');
+const supplierRoutes  = require('./src/routes/supplier.routes');
+const saleRoutes      = require('./src/routes/sale.routes');
+const expenseRoutes   = require('./src/routes/expense.routes');   // 🆕
+const dashboardRoutes = require('./src/routes/dashboard.routes'); // 🆕
 
 app.use('/api/auth',       authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products',   productRoutes);
 app.use('/api/customers',  customerRoutes);
 app.use('/api/suppliers',  supplierRoutes);
-app.use('/api/sales',      saleRoutes); // 🆕
+app.use('/api/sales',      saleRoutes);
+app.use('/api/expenses',   expenseRoutes);   // 🆕
+app.use('/api/dashboard',  dashboardRoutes); // 🆕
 
 app.get('/', (req, res) => {
   res.json({ message: '🚀 SmartBiz API is running!' });
