@@ -3,7 +3,6 @@
 const openai = require('../config/openai');
 
 // ── BUSINESS INSIGHTS ────────────────────────────────
-// Analyzes business data and returns AI recommendations
 const generateBusinessInsights = async (dashboardData) => {
   const prompt = `
 You are a smart business analyst for a small business.
@@ -36,7 +35,7 @@ Format your response as a JSON array of insights like:
   { "type": "tip", "title": "Increase Revenue", "message": "..." },
   { "type": "positive", "title": "Great Performance", "message": "..." }
 ]
-Only respond with the JSON array, nothing else.
+Important: Only respond with the JSON array, nothing else.
   `;
 
   const response = await openai.chat.completions.create({
@@ -46,35 +45,16 @@ Only respond with the JSON array, nothing else.
     temperature: 0.7,
   });
 
-  const content = response.choices[0].message.content;
-  return JSON.parse(content);
-};
+  // ── CLEAN RESPONSE ────────────────────────────────
+  const raw = response.choices[0].message.content;
+  const cleaned = raw
+    .replace(/[\u0000-\u001F\u007F]/g, ' ')
+    .replace(/\n/g, ' ')
+    .replace(/\r/g, ' ')
+    .replace(/\t/g, ' ')
+    .trim();
 
-// ── EMAIL COMPOSER ───────────────────────────────────
-const composeEmail = async (purpose, details) => {
-  const prompt = `
-Write a professional business email for a small business owner.
-Purpose: ${purpose}
-Details: ${details}
-
-Write a complete email with subject line and body.
-Format as JSON:
-{
-  "subject": "...",
-  "body": "..."
-}
-Only respond with the JSON, nothing else.
-  `;
-
-  const response = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
-    messages: [{ role: 'user', content: prompt }],
-    max_tokens: 600,
-    temperature: 0.7,
-  });
-
-  const content = response.choices[0].message.content;
-  return JSON.parse(content);
+  return JSON.parse(cleaned);
 };
 
 // ── SOCIAL MEDIA POST GENERATOR ──────────────────────
@@ -90,7 +70,7 @@ Format as JSON:
   "post": "...",
   "hashtags": ["...", "..."]
 }
-Only respond with the JSON, nothing else.
+Important: Only respond with the JSON, nothing else.
   `;
 
   const response = await openai.chat.completions.create({
@@ -100,9 +80,58 @@ Only respond with the JSON, nothing else.
     temperature: 0.8,
   });
 
-  const content = response.choices[0].message.content;
-  return JSON.parse(content);
+  // ── CLEAN RESPONSE ────────────────────────────────
+  const raw = response.choices[0].message.content;
+  const cleaned = raw
+    .replace(/[\u0000-\u001F\u007F]/g, ' ')
+    .replace(/\n/g, ' ')
+    .replace(/\r/g, ' ')
+    .replace(/\t/g, ' ')
+    .trim();
+
+  return JSON.parse(cleaned);
 };
+// ── EMAIL COMPOSER ───────────────────────────────────
+const composeEmail = async (purpose, details) => {
+  const prompt = `
+Write a professional business email for a small business owner.
+Purpose: ${purpose}
+Details: ${details}
+
+Write a complete email with subject line and body.
+Format as JSON:
+{
+  "subject": "...",
+  "body": "..."
+}
+Important: 
+- Do not use line breaks inside the JSON values
+- Use \\n for new lines inside the body
+- Only respond with the JSON, nothing else.
+  `;
+
+  const response = await openai.chat.completions.create({
+    model: 'gpt-3.5-turbo',
+    messages: [{ role: 'user', content: prompt }],
+    max_tokens: 600,
+    temperature: 0.7,
+  });
+
+  // ── CLEAN RESPONSE BEFORE PARSING ────────────────
+  // Remove any control characters that break JSON.parse
+  const raw = response.choices[0].message.content;
+  const cleaned = raw
+    .replace(/[\u0000-\u001F\u007F]/g, ' ') // remove control characters
+    .replace(/\n/g, ' ')                     // remove newlines
+    .replace(/\r/g, ' ')                     // remove carriage returns
+    .replace(/\t/g, ' ')                     // remove tabs
+    .trim();
+
+  return JSON.parse(cleaned);
+};
+
+
+
 
 // ── BUSINESS CHATBOT ─────────────────────────────────
 const chatWithBusiness = async (question, businessContext) => {
