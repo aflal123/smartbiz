@@ -13,7 +13,7 @@ import {
   Dashboard, Inventory, People, LocalShipping,
   Receipt, AccountBalance, SmartToy,
   Logout, Person, Store, ChevronLeft,
-  Notifications,Category 
+  Notifications, Assessment 
 } from '@mui/icons-material';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -29,6 +29,7 @@ const navItems = [
   { label: 'Suppliers',   path: '/suppliers',   icon: <LocalShipping /> },
   { label: 'Sales',       path: '/sales',       icon: <Receipt /> },
   { label: 'Expenses',    path: '/expenses',    icon: <AccountBalance /> },
+  { label: 'Reports', path: '/reports', icon: <Assessment /> },
   { label: 'AI Features', path: '/ai',          icon: <SmartToy /> },
 ];
 

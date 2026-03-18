@@ -18,6 +18,7 @@ import SuppliersPage  from './pages/suppliers/SuppliersPage';
 import SalesPage      from './pages/sales/SalesPage';
 import ExpensesPage   from './pages/expenses/ExpensesPage';
 import AIPage         from './pages/ai/AIPage';
+import ReportsPage from './pages/reports/ReportsPage';
 
 
 // ── LAYOUT ───────────────────────────────────────────
@@ -68,7 +69,7 @@ const App = () => {
         <Route path="suppliers" element={<SuppliersPage />} />
         <Route path="sales"     element={<SalesPage />} />
         <Route path="expenses"  element={<ExpensesPage />} />
-        
+        <Route path="reports" element={<ReportsPage />} />
         <Route path="ai"        element={<AIPage />} />
       </Route>
 

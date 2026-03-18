@@ -107,12 +107,13 @@ export const aiAPI = {
 };
 
 export const saleAPI = {
-  getAll:  ()     => API.get('/sales'),
-  getOne:  (id)   => API.get(`/sales/${id}`),
-  create:  (data) => API.post('/sales', data),
-  update:  (id, data) => API.put(`/sales/${id}`, data), // 🆕
-  cancel:  (id)   => API.put(`/sales/${id}/cancel`),
-  summary: ()     => API.get('/sales/summary'),
+  getAll:   ()          => API.get('/sales'),
+  getOne:   (id)        => API.get(`/sales/${id}`),
+  create:   (data)      => API.post('/sales', data),
+  update:   (id, data)  => API.put(`/sales/${id}`, data),
+  cancel:   (id)        => API.put(`/sales/${id}/cancel`),
+  summary:  ()          => API.get('/sales/summary'),
+  report:   (params)    => API.get('/sales/report', { params }), // 🆕
 };
 
 export default API;
