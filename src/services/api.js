@@ -87,14 +87,7 @@ export const supplierAPI = {
   delete:  (id)       => API.delete(`/suppliers/${id}`),
 };
 
-// ── SALES ────────────────────────────────────────────
-export const saleAPI = {
-  getAll:  ()     => API.get('/sales'),
-  getOne:  (id)   => API.get(`/sales/${id}`),
-  create:  (data) => API.post('/sales', data),
-  cancel:  (id)   => API.put(`/sales/${id}/cancel`),
-  summary: ()     => API.get('/sales/summary'),
-};
+
 
 // ── EXPENSES ─────────────────────────────────────────
 export const expenseAPI = {
@@ -111,6 +104,15 @@ export const aiAPI = {
   email:      (data) => API.post('/ai/email', data),
   socialPost: (data) => API.post('/ai/social-post', data),
   chat:       (data) => API.post('/ai/chat', data),
+};
+
+export const saleAPI = {
+  getAll:  ()     => API.get('/sales'),
+  getOne:  (id)   => API.get(`/sales/${id}`),
+  create:  (data) => API.post('/sales', data),
+  update:  (id, data) => API.put(`/sales/${id}`, data), // 🆕
+  cancel:  (id)   => API.put(`/sales/${id}/cancel`),
+  summary: ()     => API.get('/sales/summary'),
 };
 
 export default API;
