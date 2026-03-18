@@ -363,7 +363,215 @@ const getSalesSummary = async (req, res) => {
   }
 };
 
+// ── GENERATE INVOICE PDF ──────────────────────────────
+const { generateInvoicePDF } = require('../services/pdf.service');
+
+const downloadInvoice = async (req, res) => {
+  try {
+    const sale = await Sale.findOne({
+      where: { id: req.params.id, userId: req.user.id },
+      include: [
+        {
+          model: SaleItem,
+          as: 'items',
+          include: [{
+            model: Product,
+            as: 'product',
+            attributes: ['id', 'name', 'sku']
+          }]
+        },
+        {
+          model: Customer,
+          as: 'customer',
+          attributes: ['id', 'name', 'phone', 'email']
+        }
+      ]
+    });
+
+    if (!sale) {
+      return res.status(404).json({
+        success: false,
+        message: 'Sale not found.'
+      });
+    }
+
+    // Generate and stream PDF
+    generateInvoicePDF(sale, res);
+
+  } catch (error) {
+    console.error('Download invoice error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to generate invoice.'
+    });
+  }
+};
+// ── UPDATE SALE ───────────────────────────────────────
+const updateSale = async (req, res) => {
+  try {
+    const sale = await Sale.findOne({
+      where: { id: req.params.id, userId: req.user.id }
+    });
+
+    if (!sale) {
+      return res.status(404).json({ success: false, message: 'Sale not found.' });
+    }
+
+    const { notes, paymentMethod, status } = req.body;
+    await sale.update({ notes, paymentMethod, status });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Sale updated!',
+      sale
+    });
+
+  } catch (error) {
+    console.error('Update sale error:', error);
+    return res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};
+// ── SALES REPORT ──────────────────────────────────────
+const getSalesReport = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { startDate, endDate } = req.query;
+    const { Op } = require('sequelize');
+
+    // Default to current month if no dates provided
+    const start = startDate
+      ? new Date(startDate)
+      : new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+
+    const end = endDate
+      ? new Date(endDate)
+      : new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+
+    // Set end to end of day
+    end.setHours(23, 59, 59, 999);
+
+    // ── GET SALES IN RANGE ────────────────────────────
+    const sales = await Sale.findAll({
+      where: {
+        userId,
+        status: { [Op.ne]: 'cancelled' },
+        createdAt: { [Op.between]: [start, end] }
+      },
+      include: [
+        {
+          model: SaleItem,
+          as: 'items',
+          include: [{
+            model: Product,
+            as: 'product',
+            attributes: ['id', 'name', 'sku']
+          }]
+        },
+        {
+          model: Customer,
+          as: 'customer',
+          attributes: ['id', 'name', 'phone']
+        }
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+
+    // ── GET EXPENSES IN RANGE ─────────────────────────
+    const { Expense } = require('../models');
+    const expenses = await Expense.findAll({
+      where: {
+        userId,
+        expenseDate: {
+          [Op.between]: [
+            start.toISOString().split('T')[0],
+            end.toISOString().split('T')[0]
+          ]
+        }
+      }
+    });
+
+    // ── CALCULATE TOTALS ──────────────────────────────
+    const totalRevenue  = sales.reduce((sum, s) => sum + parseFloat(s.finalAmount), 0);
+    const totalExpenses = expenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
+    const totalProfit   = totalRevenue - totalExpenses;
+    const totalDiscount = sales.reduce((sum, s) => sum + parseFloat(s.discount), 0);
+
+    // ── TOP SELLING PRODUCTS ──────────────────────────
+    const productSales = {};
+    sales.forEach(sale => {
+      sale.items?.forEach(item => {
+        const productId   = item.productId;
+        const productName = item.product?.name || 'Unknown';
+        if (!productSales[productId]) {
+          productSales[productId] = {
+            id:       productId,
+            name:     productName,
+            quantity: 0,
+            revenue:  0,
+          };
+        }
+        productSales[productId].quantity += item.quantity;
+        productSales[productId].revenue  += parseFloat(item.subtotal);
+      });
+    });
+
+    const topProducts = Object.values(productSales)
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 5);
+
+    // ── DAILY BREAKDOWN ───────────────────────────────
+    const dailyData = {};
+    sales.forEach(sale => {
+      const date = new Date(sale.createdAt).toISOString().split('T')[0];
+      if (!dailyData[date]) {
+        dailyData[date] = { date, revenue: 0, salesCount: 0 };
+      }
+      dailyData[date].revenue    += parseFloat(sale.finalAmount);
+      dailyData[date].salesCount += 1;
+    });
+
+    const dailyBreakdown = Object.values(dailyData)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    // ── PAYMENT METHOD BREAKDOWN ──────────────────────
+    const paymentBreakdown = {};
+    sales.forEach(sale => {
+      const method = sale.paymentMethod;
+      if (!paymentBreakdown[method]) {
+        paymentBreakdown[method] = { method, count: 0, amount: 0 };
+      }
+      paymentBreakdown[method].count  += 1;
+      paymentBreakdown[method].amount += parseFloat(sale.finalAmount);
+    });
+
+    return res.status(200).json({
+      success: true,
+      report: {
+        period: {
+          startDate: start.toISOString().split('T')[0],
+          endDate:   end.toISOString().split('T')[0],
+        },
+        summary: {
+          totalSales:    sales.length,
+          totalRevenue:  totalRevenue.toFixed(2),
+          totalExpenses: totalExpenses.toFixed(2),
+          totalProfit:   totalProfit.toFixed(2),
+          totalDiscount: totalDiscount.toFixed(2),
+        },
+        topProducts,
+        dailyBreakdown,
+        paymentBreakdown: Object.values(paymentBreakdown),
+        sales,
+      }
+    });
+
+  } catch (error) {
+    console.error('Sales report error:', error);
+    return res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};
+
 module.exports = {
   createSale, getSales, getSale,
-  cancelSale, getSalesSummary
+  cancelSale, getSalesSummary,downloadInvoice,updateSale,getSalesReport
 };
