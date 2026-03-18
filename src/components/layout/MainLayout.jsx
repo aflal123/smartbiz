@@ -13,7 +13,7 @@ import {
   Dashboard, Inventory, People, LocalShipping,
   Receipt, AccountBalance, SmartToy,
   Logout, Person, Store, ChevronLeft,
-  Notifications
+  Notifications,Category 
 } from '@mui/icons-material';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -22,13 +22,14 @@ const DRAWER_WIDTH = 260;
 
 // ── NAVIGATION ITEMS ─────────────────────────────────
 const navItems = [
-  { label: 'Dashboard',  path: '/',          icon: <Dashboard /> },
-  { label: 'Products',   path: '/products',  icon: <Inventory /> },
-  { label: 'Customers',  path: '/customers', icon: <People /> },
-  { label: 'Suppliers',  path: '/suppliers', icon: <LocalShipping /> },
-  { label: 'Sales',      path: '/sales',     icon: <Receipt /> },
-  { label: 'Expenses',   path: '/expenses',  icon: <AccountBalance /> },
-  { label: 'AI Features',path: '/ai',        icon: <SmartToy /> },
+  { label: 'Dashboard',   path: '/',            icon: <Dashboard /> },
+ 
+  { label: 'Products',    path: '/products',    icon: <Inventory /> },
+  { label: 'Customers',   path: '/customers',   icon: <People /> },
+  { label: 'Suppliers',   path: '/suppliers',   icon: <LocalShipping /> },
+  { label: 'Sales',       path: '/sales',       icon: <Receipt /> },
+  { label: 'Expenses',    path: '/expenses',    icon: <AccountBalance /> },
+  { label: 'AI Features', path: '/ai',          icon: <SmartToy /> },
 ];
 
 const MainLayout = () => {
