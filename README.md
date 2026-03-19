@@ -1,16 +1,132 @@
-# React + Vite
+# SmartBiz Frontend Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+AI-Powered Business Management Suite — Web Dashboard
 
-Currently, two official plugins are available:
+## 🖥️ Tech Stack
+- React JS (Vite)
+- Material UI (MUI)
+- React Router DOM
+- React Query (TanStack)
+- Recharts
+- jsPDF + jsPDF-AutoTable
+- Axios
+- React Hot Toast
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Features
 
-## React Compiler
+### Authentication
+- ✅ Register with OTP email verification
+- ✅ Login with JWT
+- ✅ Forgot & Reset Password
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Dashboard
+- ✅ Today's revenue, expenses, profit
+- ✅ Weekly revenue chart
+- ✅ Recent sales list
+- ✅ Low stock alerts
+- ✅ AI insights button
 
-## Expanding the ESLint configuration
+### Products
+- ✅ Add, edit, delete products
+- ✅ Image upload with preview
+- ✅ Quick category creation
+- ✅ Barcode display
+- ✅ Stock level indicators
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Customers
+- ✅ Add, edit, delete customers
+- ✅ Search by name, phone, email
+- ✅ Outstanding balance tracking
+
+### Suppliers
+- ✅ Add, edit, delete suppliers
+- ✅ Company name tracking
+- ✅ Search functionality
+
+### Sales
+- ✅ Create sales with multiple items
+- ✅ Auto price fill from product
+- ✅ Live total calculation
+- ✅ View invoice details
+- ✅ Download invoice as PDF
+- ✅ Print invoice
+- ✅ Cancel sale (restores stock)
+
+### Expenses
+- ✅ Record and track expenses
+- ✅ Category filtering
+- ✅ Color coded categories
+- ✅ Edit and delete
+
+### Reports
+- ✅ Date range selection
+- ✅ Daily revenue chart
+- ✅ Payment method pie chart
+- ✅ Top selling products bar chart
+- ✅ Export report as PDF
+
+### AI Features
+- ✅ Business insights analyzer
+- ✅ Email composer
+- ✅ Social media post generator
+- ✅ Business chatbot
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js v18+
+- SmartBiz Backend running on port 8000
+
+### Installation
+
+#### 1. Clone the repository
+```bash
+git clone https://github.com/aflal123/smartbiz.git
+cd smartbiz/frontend-web
+```
+
+#### 2. Install dependencies
+```bash
+npm install
+```
+
+#### 3. Start the development server
+```bash
+npm run dev
+```
+
+#### 4. Open in browser
+```
+http://localhost:5173
+```
+
+## 📁 Project Structure
+```
+frontend-web/
+├── src/
+│   ├── pages/
+│   │   ├── auth/          # Login, Register, OTP, Reset
+│   │   ├── dashboard/     # Dashboard with charts
+│   │   ├── products/      # Product management
+│   │   ├── customers/     # Customer management
+│   │   ├── suppliers/     # Supplier management
+│   │   ├── sales/         # Sales & invoices
+│   │   ├── expenses/      # Expense tracking
+│   │   ├── reports/       # Sales reports
+│   │   └── ai/            # AI features
+│   ├── components/
+│   │   └── layout/        # Sidebar, Topbar, MainLayout
+│   ├── context/
+│   │   └── AuthContext    # Global auth state
+│   ├── services/
+│   │   └── api.js         # All API calls
+│   └── main.jsx           # App entry point
+├── public/
+├── index.html
+└── package.json
+```
+
+## 🔗 Related Projects
+- [SmartBiz Backend](../backend)
+- [SmartBiz Admin Panel](../admin-panel)
+- [SmartBiz Mobile App](../mobile-app)
