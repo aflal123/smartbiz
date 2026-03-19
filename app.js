@@ -19,9 +19,11 @@ const productRoutes   = require('./src/routes/product.routes');
 const customerRoutes  = require('./src/routes/customer.routes');
 const supplierRoutes  = require('./src/routes/supplier.routes');
 const saleRoutes      = require('./src/routes/sale.routes');
-const expenseRoutes   = require('./src/routes/expense.routes');   // 🆕
-const dashboardRoutes = require('./src/routes/dashboard.routes'); // 🆕
+const expenseRoutes   = require('./src/routes/expense.routes');   
+const dashboardRoutes = require('./src/routes/dashboard.routes'); 
 const aiRoutes = require('./src/routes/ai.routes');
+const adminRoutes = require('./src/routes/admin.routes');
+
 
 app.use('/api/auth',       authRoutes);
 app.use('/api/categories', categoryRoutes);
@@ -29,9 +31,11 @@ app.use('/api/products',   productRoutes);
 app.use('/api/customers',  customerRoutes);
 app.use('/api/suppliers',  supplierRoutes);
 app.use('/api/sales',      saleRoutes);
-app.use('/api/expenses',   expenseRoutes);   // 🆕
-app.use('/api/dashboard',  dashboardRoutes); // 🆕
+app.use('/api/expenses',   expenseRoutes);   
+app.use('/api/dashboard',  dashboardRoutes); 
 app.use('/api/ai', aiRoutes);
+app.use('/api/admin', adminRoutes)
+
 
 app.get('/', (req, res) => {
   res.json({ message: '🚀 SmartBiz API is running!' });

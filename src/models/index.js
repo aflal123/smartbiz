@@ -8,6 +8,7 @@ const Supplier = require('./Supplier');
 const Sale     = require('./Sale');
 const SaleItem = require('./SaleItem');
 const Expense  = require('./Expense');
+const Admin    = require('./Admin');
 
 // ── USER RELATIONSHIPS ───────────────────────────────
 User.hasMany(Category, { foreignKey: 'userId', as: 'categories' });
@@ -16,6 +17,7 @@ User.hasMany(Customer, { foreignKey: 'userId', as: 'customers'  });
 User.hasMany(Supplier, { foreignKey: 'userId', as: 'suppliers'  });
 User.hasMany(Sale,     { foreignKey: 'userId', as: 'sales'      });
 User.hasMany(Expense,  { foreignKey: 'userId', as: 'expenses'   });
+
 
 Category.belongsTo(User, { foreignKey: 'userId', as: 'owner' });
 Product.belongsTo(User,  { foreignKey: 'userId', as: 'owner' });
@@ -44,5 +46,5 @@ module.exports = {
   User, Category, Product,
   Customer, Supplier,
   Sale, SaleItem,
-  Expense
+  Expense,Admin
 };

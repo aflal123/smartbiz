@@ -7,7 +7,7 @@ const {
   User, Category, Product,
   Customer, Supplier,
   Sale, SaleItem,
-  Expense             // 🆕
+  Expense ,Admin          
 } = require('./src/models');
 
 const PORT = process.env.PORT || 8000;
