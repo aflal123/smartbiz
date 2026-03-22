@@ -1,0 +1,1116 @@
+// src/pages/sales/SalesPage.jsx
+
+import { useState } from 'react';
+import {
+  Box, Card, CardContent, Typography, Button,
+  TextField, InputAdornment, Chip, Avatar,
+  IconButton, Dialog, DialogTitle, DialogContent,
+  DialogActions, Grid, Tooltip, MenuItem,
+  Divider, Table, TableBody, TableCell,
+  TableHead, TableRow, Alert, CircularProgress
+} from '@mui/material';
+import {
+  Add, Search, Receipt, Close,
+  Delete, Visibility, Cancel,
+  ShoppingCart, Person, Print, Download, Edit
+} from '@mui/icons-material';
+import { DataGrid } from '@mui/x-data-grid';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { saleAPI, customerAPI, productAPI } from '../../services/api';
+import toast from 'react-hot-toast';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
+// ── GENERATE PDF ──────────────────────────────────────
+const generatePDF = (sale, download = false) => {
+  const doc = new jsPDF();
+
+  // ── HEADER ───────────────────────────────────────
+  doc.setFillColor(37, 99, 235);
+  doc.rect(0, 0, 210, 40, 'F');
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(24);
+  doc.setFont('helvetica', 'bold');
+  doc.text('SmartBiz', 15, 18);
+
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.text('AI-Powered Business Management', 15, 26);
+  doc.text('smartbiz.com | info@smartbiz.com', 15, 33);
+
+  doc.setFontSize(20);
+  doc.setFont('helvetica', 'bold');
+  doc.text('INVOICE', 150, 18);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.text(sale.invoiceNumber, 150, 26);
+
+  // ── BILL TO ───────────────────────────────────────
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.text('BILL TO:', 15, 55);
+  doc.setFont('helvetica', 'normal');
+  doc.text(sale.customer?.name || 'Walk-in Customer', 15, 63);
+  if (sale.customer?.phone) doc.text(sale.customer.phone, 15, 70);
+  if (sale.customer?.email) doc.text(sale.customer.email, 15, 77);
+
+  // ── INVOICE DETAILS ───────────────────────────────
+  doc.setFont('helvetica', 'bold');
+  doc.text('INVOICE DETAILS:', 130, 55);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Date: ${new Date(sale.createdAt).toLocaleDateString()}`, 130, 63);
+  doc.text(`Payment: ${sale.paymentMethod?.toUpperCase()}`, 130, 70);
+  doc.text(`Status: ${sale.status?.toUpperCase()}`, 130, 77);
+
+  // ── ITEMS TABLE ───────────────────────────────────
+  autoTable(doc, {
+    startY: 90,
+    head: [['#', 'Product', 'Qty', 'Unit Price', 'Subtotal']],
+    body: sale.items?.map((item, index) => [
+      index + 1,
+      item.product?.name || 'Product',
+      item.quantity,
+      `Rs. ${Number(item.unitPrice).toLocaleString()}`,
+      `Rs. ${Number(item.subtotal).toLocaleString()}`,
+    ]) || [],
+    headStyles: {
+      fillColor: [37, 99, 235],
+      textColor: [255, 255, 255],
+      fontStyle: 'bold',
+    },
+    alternateRowStyles: { fillColor: [248, 250, 252] },
+    styles: { fontSize: 10 },
+  });
+
+  const finalY = doc.lastAutoTable.finalY + 10;
+
+  // ── TOTALS ────────────────────────────────────────
+  const totalsX = 130;
+
+  doc.setDrawColor(200, 200, 200);
+  doc.line(totalsX, finalY, 195, finalY);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(0, 0, 0);
+
+  doc.text('Total Amount:', totalsX, finalY + 8);
+  doc.text(
+    `Rs. ${Number(sale.totalAmount).toLocaleString()}`,
+    195, finalY + 8, { align: 'right' }
+  );
+
+  doc.text('Discount:', totalsX, finalY + 16);
+  doc.setTextColor(239, 68, 68);
+  doc.text(
+    `- Rs. ${Number(sale.discount).toLocaleString()}`,
+    195, finalY + 16, { align: 'right' }
+  );
+
+  doc.setTextColor(0, 0, 0);
+  doc.line(totalsX, finalY + 20, 195, finalY + 20);
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(12);
+  doc.text('Final Amount:', totalsX, finalY + 30);
+  doc.setTextColor(37, 99, 235);
+  doc.text(
+    `Rs. ${Number(sale.finalAmount).toLocaleString()}`,
+    195, finalY + 30, { align: 'right' }
+  );
+
+  doc.setTextColor(0, 0, 0);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+
+  doc.text('Amount Paid:', totalsX, finalY + 40);
+  doc.setTextColor(16, 185, 129);
+  doc.text(
+    `Rs. ${Number(sale.amountPaid).toLocaleString()}`,
+    195, finalY + 40, { align: 'right' }
+  );
+
+  doc.setTextColor(0, 0, 0);
+  doc.text('Change:', totalsX, finalY + 48);
+  doc.text(
+    `Rs. ${Number(sale.changeAmount).toLocaleString()}`,
+    195, finalY + 48, { align: 'right' }
+  );
+
+  // ── NOTES ─────────────────────────────────────────
+  if (sale.notes) {
+    doc.setFontSize(9);
+    doc.setTextColor(100, 116, 139);
+    doc.text('Notes:', 15, finalY + 65);
+    doc.setTextColor(0, 0, 0);
+    doc.text(sale.notes, 15, finalY + 73, { maxWidth: 180 });
+  }
+
+  // ── FOOTER ────────────────────────────────────────
+  doc.setFontSize(9);
+  doc.setTextColor(150, 150, 150);
+  doc.text(
+    'Thank you for your business!',
+    105, 280, { align: 'center' }
+  );
+  doc.text(
+    'Generated by SmartBiz — AI-Powered Business Management',
+    105, 286, { align: 'center' }
+  );
+
+  if (sale.barcodeNumber) {
+    doc.text(
+      `Invoice Barcode: ${sale.barcodeNumber}`,
+      105, 292, { align: 'center' }
+    );
+  }
+
+  if (download) {
+    doc.save(`${sale.invoiceNumber}.pdf`);
+  } else {
+    const blob = doc.output('blob');
+    const url  = URL.createObjectURL(blob);
+    const win  = window.open(url, '_blank');
+    win?.print();
+  }
+};
+
+// ── CREATE SALE DIALOG ────────────────────────────────
+const CreateSaleDialog = ({ open, onClose, customers, products }) => {
+  const queryClient = useQueryClient();
+
+  const [customerId, setCustomerId]       = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('cash');
+  const [discount, setDiscount]           = useState(0);
+  const [amountPaid, setAmountPaid]       = useState('');
+  const [notes, setNotes]                 = useState('');
+  const [items, setItems]                 = useState([
+    { productId: '', quantity: 1, unitPrice: '' }
+  ]);
+
+  const addItem = () => {
+    setItems([...items, { productId: '', quantity: 1, unitPrice: '' }]);
+  };
+
+  const removeItem = (index) => {
+    if (items.length === 1) return;
+    setItems(items.filter((_, i) => i !== index));
+  };
+
+  const updateItem = (index, field, value) => {
+    const updated = [...items];
+    updated[index][field] = value;
+    if (field === 'productId') {
+      const product = products.find(p => p.id === Number(value));
+      if (product) updated[index].unitPrice = product.sellingPrice;
+    }
+    setItems(updated);
+  };
+
+  const totalAmount  = items.reduce(
+    (sum, item) => sum + (Number(item.quantity) * Number(item.unitPrice) || 0), 0
+  );
+  const finalAmount  = totalAmount - Number(discount || 0);
+  const changeAmount = Number(amountPaid || 0) - finalAmount;
+
+  const createMutation = useMutation({
+    mutationFn: (data) => saleAPI.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['sales']);
+      queryClient.invalidateQueries(['products']);
+      toast.success('Sale created! 🎉');
+      onClose();
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Failed to create sale.');
+    }
+  });
+
+  const handleSubmit = () => {
+    for (const item of items) {
+      if (!item.productId || !item.quantity || !item.unitPrice) {
+        toast.error('Please fill all item fields!');
+        return;
+      }
+    }
+    createMutation.mutate({
+      customerId:    customerId || null,
+      paymentMethod,
+      discount:      Number(discount || 0),
+      amountPaid:    Number(amountPaid || finalAmount),
+      notes,
+      items: items.map(i => ({
+        productId: Number(i.productId),
+        quantity:  Number(i.quantity),
+        unitPrice: Number(i.unitPrice),
+      }))
+    });
+  };
+
+  return (
+    <Dialog
+      open={open} onClose={onClose}
+      maxWidth="md" fullWidth
+      PaperProps={{ sx: { borderRadius: 3 } }}
+    >
+      <DialogTitle sx={{
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+      }}>
+        <Typography variant="h6" fontWeight={600}>
+          Create New Sale 🛒
+        </Typography>
+        <IconButton onClick={onClose}><Close /></IconButton>
+      </DialogTitle>
+
+      <DialogContent dividers sx={{ maxHeight: '70vh', overflowY: 'auto' }}>
+        <Grid container spacing={2} sx={{ pt: 1 }}>
+
+          {/* Customer */}
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth select label="Customer (Optional)"
+              value={customerId}
+              onChange={(e) => setCustomerId(e.target.value)}
+              SelectProps={{
+                MenuProps: { PaperProps: { style: { maxHeight: 250 } } }
+              }}
+            >
+              <MenuItem value=""><em>Walk-in Customer</em></MenuItem>
+              {customers?.map(c => (
+                <MenuItem key={c.id} value={c.id}>
+                  {c.name} — {c.phone}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+
+          {/* Payment Method */}
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth select label="Payment Method"
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            >
+              {['cash', 'card', 'transfer', 'credit'].map(m => (
+                <MenuItem key={m} value={m}>
+                  {m.charAt(0).toUpperCase() + m.slice(1)}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+
+          {/* Items Table */}
+          <Grid item xs={12}>
+            <Box sx={{
+              border: '1px solid #e2e8f0',
+              borderRadius: 2, overflow: 'hidden'
+            }}>
+              <Box sx={{
+                bgcolor: '#f8fafc', px: 2, py: 1.5,
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+              }}>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Sale Items
+                </Typography>
+                <Button
+                  size="small" startIcon={<Add />}
+                  onClick={addItem} variant="outlined"
+                >
+                  Add Item
+                </Button>
+              </Box>
+              <Table size="small">
+                <TableHead>
+                  <TableRow sx={{ bgcolor: '#f8fafc' }}>
+                    <TableCell>Product</TableCell>
+                    <TableCell width={100}>Qty</TableCell>
+                    <TableCell width={130}>Unit Price</TableCell>
+                    <TableCell width={120}>Subtotal</TableCell>
+                    <TableCell width={50}></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {items.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <TextField
+                          fullWidth select size="small"
+                          value={item.productId}
+                          onChange={(e) => updateItem(index, 'productId', e.target.value)}
+                          SelectProps={{
+                            MenuProps: { PaperProps: { style: { maxHeight: 250 } } }
+                          }}
+                        >
+                          <MenuItem value=""><em>Select product</em></MenuItem>
+                          {products?.map(p => (
+                            <MenuItem key={p.id} value={p.id}>
+                              {p.name} (Stock: {p.stockQuantity})
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          size="small" type="number"
+                          value={item.quantity}
+                          onChange={(e) => updateItem(index, 'quantity', e.target.value)}
+                          inputProps={{ min: 1 }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          size="small" type="number"
+                          value={item.unitPrice}
+                          onChange={(e) => updateItem(index, 'unitPrice', e.target.value)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2" fontWeight={600} color="primary">
+                          Rs. {(Number(item.quantity) * Number(item.unitPrice) || 0).toLocaleString()}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          size="small" color="error"
+                          onClick={() => removeItem(index)}
+                          disabled={items.length === 1}
+                        >
+                          <Delete fontSize="small" />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Grid>
+
+          {/* Discount & Amount Paid */}
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth label="Discount (Rs.)" type="number"
+              value={discount}
+              onChange={(e) => setDiscount(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth label="Amount Paid (Rs.)" type="number"
+              value={amountPaid}
+              onChange={(e) => setAmountPaid(e.target.value)}
+              placeholder={`Min: Rs. ${finalAmount.toLocaleString()}`}
+            />
+          </Grid>
+
+          {/* Summary Box */}
+          <Grid item xs={12}>
+            <Box sx={{
+              bgcolor: '#f0f4ff', borderRadius: 2, p: 2,
+              border: '1px solid #c7d7fd'
+            }}>
+              <Grid container spacing={1}>
+                <Grid item xs={6}>
+                  <Typography variant="body2" color="text.secondary">
+                    Total Amount:
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2" fontWeight={600} textAlign="right">
+                    Rs. {totalAmount.toLocaleString()}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2" color="text.secondary">
+                    Discount:
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2" color="error" textAlign="right">
+                    - Rs. {Number(discount || 0).toLocaleString()}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}><Divider /></Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body1" fontWeight={700}>
+                    Final Amount:
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body1" fontWeight={700} color="primary" textAlign="right">
+                    Rs. {finalAmount.toLocaleString()}
+                  </Typography>
+                </Grid>
+                {amountPaid && (
+                  <>
+                    <Grid item xs={6}>
+                      <Typography variant="body2" color="text.secondary">
+                        Change:
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Typography
+                        variant="body2" fontWeight={600} textAlign="right"
+                        color={changeAmount >= 0 ? 'success.main' : 'error.main'}
+                      >
+                        Rs. {changeAmount.toLocaleString()}
+                      </Typography>
+                    </Grid>
+                  </>
+                )}
+              </Grid>
+            </Box>
+          </Grid>
+
+          {/* Notes */}
+          <Grid item xs={12}>
+            <TextField
+              fullWidth label="Notes" value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              multiline rows={2}
+              placeholder="Any notes about this sale..."
+            />
+          </Grid>
+
+        </Grid>
+      </DialogContent>
+
+      <DialogActions sx={{ p: 2.5, gap: 1 }}>
+        <Button onClick={onClose} variant="outlined" color="inherit">
+          Cancel
+        </Button>
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          disabled={createMutation.isPending}
+          sx={{
+            background: 'linear-gradient(135deg, #2563eb, #7c3aed)',
+            '&:hover': { background: 'linear-gradient(135deg, #1d4ed8, #6d28d9)' }
+          }}
+        >
+          {createMutation.isPending ? 'Creating...' : 'Create Sale'}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+// ── EDIT SALE DIALOG ──────────────────────────────────
+const EditSaleDialog = ({ open, onClose, sale }) => {
+  const queryClient = useQueryClient();
+
+  const [notes, setNotes]                 = useState(sale?.notes || '');
+  const [paymentMethod, setPaymentMethod] = useState(sale?.paymentMethod || 'cash');
+  const [status, setStatus]               = useState(sale?.status || 'paid');
+
+  const updateMutation = useMutation({
+    mutationFn: (data) => saleAPI.update(sale.id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['sales']);
+      toast.success('Sale updated! ✅');
+      onClose();
+    },
+    onError: () => toast.error('Failed to update sale.')
+  });
+
+  return (
+    <Dialog
+      open={open} onClose={onClose}
+      maxWidth="sm" fullWidth
+      PaperProps={{ sx: { borderRadius: 3 } }}
+    >
+      <DialogTitle sx={{
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+      }}>
+        <Typography variant="h6" fontWeight={600}>
+          Edit Sale — {sale?.invoiceNumber}
+        </Typography>
+        <IconButton onClick={onClose}><Close /></IconButton>
+      </DialogTitle>
+
+      <DialogContent dividers>
+        <Grid container spacing={2} sx={{ pt: 1 }}>
+
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth select label="Payment Method"
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            >
+              {['cash', 'card', 'transfer', 'credit'].map(m => (
+                <MenuItem key={m} value={m}>
+                  {m.charAt(0).toUpperCase() + m.slice(1)}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth select label="Status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              {['paid', 'partial', 'unpaid'].map(s => (
+                <MenuItem key={s} value={s}>
+                  {s.charAt(0).toUpperCase() + s.slice(1)}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth label="Notes" value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              multiline rows={3}
+              placeholder="Update notes..."
+            />
+          </Grid>
+
+        </Grid>
+      </DialogContent>
+
+      <DialogActions sx={{ p: 2.5, gap: 1 }}>
+        <Button onClick={onClose} variant="outlined" color="inherit">
+          Cancel
+        </Button>
+        <Button
+          onClick={() => updateMutation.mutate({ notes, paymentMethod, status })}
+          variant="contained"
+          disabled={updateMutation.isPending}
+          sx={{
+            background: 'linear-gradient(135deg, #2563eb, #7c3aed)',
+            '&:hover': { background: 'linear-gradient(135deg, #1d4ed8, #6d28d9)' }
+          }}
+        >
+          {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+// ── VIEW SALE DIALOG ──────────────────────────────────
+const ViewSaleDialog = ({ open, onClose, sale, onEdit }) => {
+  if (!sale) return null;
+
+  return (
+    <Dialog
+      open={open} onClose={onClose}
+      maxWidth="sm" fullWidth
+      PaperProps={{ sx: { borderRadius: 3 } }}
+    >
+      <DialogTitle sx={{
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+      }}>
+        <Typography variant="h6" fontWeight={600}>
+          {sale.invoiceNumber}
+        </Typography>
+        <IconButton onClick={onClose}><Close /></IconButton>
+      </DialogTitle>
+
+      <DialogContent dividers>
+
+        {/* Customer */}
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="body2" color="text.secondary" mb={0.5}>
+            Customer
+          </Typography>
+          <Typography variant="body1" fontWeight={600}>
+            {sale.customer?.name || 'Walk-in Customer'}
+          </Typography>
+          {sale.customer?.phone && (
+            <Typography variant="body2" color="text.secondary">
+              {sale.customer.phone}
+            </Typography>
+          )}
+        </Box>
+
+        <Divider sx={{ mb: 2 }} />
+
+        {/* Items */}
+        <Typography variant="subtitle2" fontWeight={600} mb={1}>
+          Items Purchased
+        </Typography>
+        <Table size="small">
+          <TableHead>
+            <TableRow sx={{ bgcolor: '#f8fafc' }}>
+              <TableCell>Product</TableCell>
+              <TableCell align="center">Qty</TableCell>
+              <TableCell align="right">Price</TableCell>
+              <TableCell align="right">Subtotal</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {sale.items?.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell>{item.product?.name}</TableCell>
+                <TableCell align="center">{item.quantity}</TableCell>
+                <TableCell align="right">
+                  Rs. {Number(item.unitPrice).toLocaleString()}
+                </TableCell>
+                <TableCell align="right">
+                  Rs. {Number(item.subtotal).toLocaleString()}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+
+        <Divider sx={{ my: 2 }} />
+
+        {/* Totals */}
+        <Box sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
+          <Grid container spacing={1}>
+            <Grid item xs={6}>
+              <Typography variant="body2" color="text.secondary">Total:</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body2" textAlign="right">
+                Rs. {Number(sale.totalAmount).toLocaleString()}
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body2" color="text.secondary">Discount:</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body2" color="error" textAlign="right">
+                - Rs. {Number(sale.discount).toLocaleString()}
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body1" fontWeight={700}>Final Amount:</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body1" fontWeight={700} color="primary" textAlign="right">
+                Rs. {Number(sale.finalAmount).toLocaleString()}
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body2" color="text.secondary">Amount Paid:</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body2" color="success.main" textAlign="right">
+                Rs. {Number(sale.amountPaid).toLocaleString()}
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body2" color="text.secondary">Change:</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="body2" textAlign="right">
+                Rs. {Number(sale.changeAmount).toLocaleString()}
+              </Typography>
+            </Grid>
+          </Grid>
+        </Box>
+
+        {/* Status & Payment */}
+        <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
+          <Chip
+            label={sale.paymentMethod?.toUpperCase()}
+            size="small" color="primary" variant="outlined"
+          />
+          <Chip
+            label={sale.status?.toUpperCase()} size="small"
+            color={
+              sale.status === 'paid'      ? 'success' :
+              sale.status === 'cancelled' ? 'error'   : 'warning'
+            }
+          />
+          <Typography variant="caption" color="text.secondary">
+            {new Date(sale.createdAt).toLocaleString()}
+          </Typography>
+        </Box>
+
+        {sale.notes && (
+          <Alert severity="info" sx={{ mt: 2, borderRadius: 2 }}>
+            {sale.notes}
+          </Alert>
+        )}
+
+      </DialogContent>
+
+      <DialogActions sx={{ p: 2, gap: 1 }}>
+        <Button onClick={onClose} variant="outlined" color="inherit">
+          Close
+        </Button>
+        <Button
+          variant="outlined" color="primary"
+          startIcon={<Edit />}
+          onClick={() => { onClose(); onEdit(sale); }}
+        >
+          Edit
+        </Button>
+        <Button
+          variant="outlined" color="success"
+          startIcon={<Print />}
+          onClick={() => generatePDF(sale, false)}
+        >
+          Print
+        </Button>
+        <Button
+          variant="contained"
+          startIcon={<Download />}
+          onClick={() => generatePDF(sale, true)}
+          sx={{
+            background: 'linear-gradient(135deg, #2563eb, #7c3aed)',
+            '&:hover': { background: 'linear-gradient(135deg, #1d4ed8, #6d28d9)' }
+          }}
+        >
+          Download PDF
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+// ── MAIN SALES PAGE ───────────────────────────────────
+const SalesPage = () => {
+  const queryClient = useQueryClient();
+  const [search, setSearch]           = useState('');
+  const [createOpen, setCreateOpen]   = useState(false);
+  const [viewSale, setViewSale]       = useState(null);
+  const [editSale, setEditSale]       = useState(null);
+  const [loadingSale, setLoadingSale] = useState(false);
+
+  const { data: sales = [], isLoading } = useQuery({
+    queryKey: ['sales'],
+    queryFn:  () => saleAPI.getAll().then(r => r.data.sales),
+  });
+
+  const { data: customers = [] } = useQuery({
+    queryKey: ['customers'],
+    queryFn:  () => customerAPI.getAll().then(r => r.data.customers),
+  });
+
+  const { data: products = [] } = useQuery({
+    queryKey: ['products'],
+    queryFn:  () => productAPI.getAll().then(r => r.data.products),
+  });
+
+  const cancelMutation = useMutation({
+    mutationFn: (id) => saleAPI.cancel(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['sales']);
+      queryClient.invalidateQueries(['products']);
+      toast.success('Sale cancelled! Stock restored! ✅');
+    },
+    onError: () => toast.error('Failed to cancel sale.')
+  });
+
+  // ── FETCH SINGLE SALE ─────────────────────────────
+  const handleViewSale = async (saleId) => {
+    setLoadingSale(true);
+    try {
+      const response = await saleAPI.getOne(saleId);
+      setViewSale(response.data.sale);
+    } catch {
+      toast.error('Failed to load sale details.');
+    } finally {
+      setLoadingSale(false);
+    }
+  };
+
+  const handleCancel = (id) => {
+    if (window.confirm('Cancel this sale? Stock will be restored!')) {
+      cancelMutation.mutate(id);
+    }
+  };
+
+  const filtered = sales.filter(s =>
+    s.invoiceNumber?.toLowerCase().includes(search.toLowerCase()) ||
+    s.customer?.name?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const totalRevenue = sales
+    .filter(s => s.status === 'paid')
+    .reduce((sum, s) => sum + Number(s.finalAmount), 0);
+
+  const columns = [
+    {
+      field: 'invoiceNumber',
+      headerName: 'Invoice #',
+      width: 160,
+      renderCell: (params) => (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Receipt fontSize="small" color="primary" />
+          <Typography variant="body2" fontWeight={600} color="primary">
+            {params.value}
+          </Typography>
+        </Box>
+      )
+    },
+    {
+      field: 'customer',
+      headerName: 'Customer',
+      flex: 1,
+      minWidth: 150,
+      renderCell: (params) => (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Person fontSize="small" color="action" />
+          <Typography variant="body2">
+            {params.row.customer?.name || 'Walk-in Customer'}
+          </Typography>
+        </Box>
+      )
+    },
+    {
+      field: 'finalAmount',
+      headerName: 'Amount',
+      width: 140,
+      renderCell: (params) => (
+        <Typography variant="body2" fontWeight={700} color="success.main">
+          Rs. {Number(params.value).toLocaleString()}
+        </Typography>
+      )
+    },
+    {
+      field: 'paymentMethod',
+      headerName: 'Payment',
+      width: 120,
+      renderCell: (params) => (
+        <Chip
+          label={params.value?.toUpperCase()}
+          size="small" variant="outlined" color="primary"
+        />
+      )
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      width: 120,
+      renderCell: (params) => (
+        <Chip
+          label={params.value?.toUpperCase()} size="small"
+          color={
+            params.value === 'paid'      ? 'success' :
+            params.value === 'cancelled' ? 'error'   : 'warning'
+          }
+        />
+      )
+    },
+    {
+      field: 'createdAt',
+      headerName: 'Date',
+      width: 150,
+      renderCell: (params) => (
+        <Typography variant="caption" color="text.secondary">
+          {new Date(params.value).toLocaleString()}
+        </Typography>
+      )
+    },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 180,
+      sortable: false,
+      renderCell: (params) => (
+        <Box sx={{ display: 'flex', gap: 0.5 }}>
+          {/* View */}
+          <Tooltip title="View Details">
+            <IconButton
+              size="small" color="primary"
+              onClick={() => handleViewSale(params.row.id)}
+              disabled={loadingSale}
+            >
+              {loadingSale
+                ? <CircularProgress size={16} />
+                : <Visibility fontSize="small" />
+              }
+            </IconButton>
+          </Tooltip>
+
+          {/* Edit */}
+          <Tooltip title="Edit Sale">
+            <IconButton
+              size="small" color="info"
+              onClick={() => setEditSale(params.row)}
+            >
+              <Edit fontSize="small" />
+            </IconButton>
+          </Tooltip>
+
+          {/* Download PDF */}
+          <Tooltip title="Download PDF">
+            <IconButton
+              size="small" color="success"
+              onClick={async () => {
+                try {
+                  const response = await saleAPI.getOne(params.row.id);
+                  generatePDF(response.data.sale, true);
+                } catch {
+                  toast.error('Failed to generate PDF.');
+                }
+              }}
+            >
+              <Download fontSize="small" />
+            </IconButton>
+          </Tooltip>
+
+          {/* Cancel */}
+          {params.row.status !== 'cancelled' && (
+            <Tooltip title="Cancel Sale">
+              <IconButton
+                size="small" color="error"
+                onClick={() => handleCancel(params.row.id)}
+              >
+                <Cancel fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          )}
+        </Box>
+      )
+    }
+  ];
+
+  return (
+    <Box>
+
+      {/* Header */}
+      <Box sx={{
+        display: 'flex', justifyContent: 'space-between',
+        alignItems: 'center', mb: 3
+      }}>
+        <Box>
+          <Typography variant="h4" fontWeight={700}>Sales 🧾</Typography>
+          <Typography variant="body2" color="text.secondary" mt={0.5}>
+            Manage your sales and invoices
+          </Typography>
+        </Box>
+        <Button
+          variant="contained" startIcon={<Add />}
+          onClick={() => setCreateOpen(true)}
+          sx={{
+            background: 'linear-gradient(135deg, #2563eb, #7c3aed)',
+            '&:hover': { background: 'linear-gradient(135deg, #1d4ed8, #6d28d9)' }
+          }}
+        >
+          New Sale
+        </Button>
+      </Box>
+
+      {/* Stats */}
+      <Grid container spacing={3} mb={3}>
+        <Grid item xs={12} sm={4}>
+          <Card>
+            <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 3 }}>
+              <Avatar sx={{
+                width: 52, height: 52,
+                background: 'linear-gradient(135deg, #10b981, #059669)'
+              }}>
+                <Receipt />
+              </Avatar>
+              <Box>
+                <Typography variant="h4" fontWeight={700}>
+                  {sales.filter(s => s.status === 'paid').length}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Total Sales
+                </Typography>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Card>
+            <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 3 }}>
+              <Avatar sx={{
+                width: 52, height: 52,
+                background: 'linear-gradient(135deg, #2563eb, #7c3aed)'
+              }}>
+                <ShoppingCart />
+              </Avatar>
+              <Box>
+                <Typography variant="h4" fontWeight={700}>
+                  Rs. {totalRevenue.toLocaleString()}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Total Revenue
+                </Typography>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
+      {/* Search */}
+      <Card sx={{ mb: 3 }}>
+        <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+          <TextField
+            fullWidth
+            placeholder="Search by invoice number or customer..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search color="action" />
+                </InputAdornment>
+              )
+            }}
+          />
+        </CardContent>
+      </Card>
+
+      {/* Table */}
+      <Card>
+        <DataGrid
+          rows={filtered}
+          columns={columns}
+          loading={isLoading}
+          autoHeight
+          pageSizeOptions={[10, 25, 50]}
+          initialState={{
+            pagination: { paginationModel: { pageSize: 10 } }
+          }}
+          disableRowSelectionOnClick
+          sx={{
+            border: 'none',
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: '#f8fafc', fontWeight: 600
+            },
+            '& .MuiDataGrid-row:hover': { backgroundColor: '#f8fafc' },
+            '& .MuiDataGrid-cell': {
+              display: 'flex', alignItems: 'center'
+            }
+          }}
+        />
+      </Card>
+
+      {/* Create Sale Dialog */}
+      {createOpen && (
+        <CreateSaleDialog
+          open={createOpen}
+          onClose={() => setCreateOpen(false)}
+          customers={customers}
+          products={products}
+        />
+      )}
+
+      {/* View Sale Dialog */}
+      {viewSale && (
+        <ViewSaleDialog
+          open={!!viewSale}
+          onClose={() => setViewSale(null)}
+          sale={viewSale}
+          onEdit={(sale) => setEditSale(sale)}
+        />
+      )}
+
+      {/* Edit Sale Dialog */}
+      {editSale && (
+        <EditSaleDialog
+          open={!!editSale}
+          onClose={() => setEditSale(null)}
+          sale={editSale}
+        />
+      )}
+
+    </Box>
+  );
+};
+
+export default SalesPage;
