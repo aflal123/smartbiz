@@ -26,6 +26,7 @@ export interface CreateSaleInput {
 }
 
 export interface SaleFilterParams {
+  search?: string;
   startDate?: string;
   endDate?: string;
   customerId?: string;
@@ -300,6 +301,13 @@ export class SaleService {
     const skip = (page - 1) * limit;
 
     const where: Prisma.SaleWhereInput = { businessId };
+
+    if (params.search) {
+      where.OR = [
+        { invoiceNumber: { contains: params.search, mode: "insensitive" } },
+        { customer: { name: { contains: params.search, mode: "insensitive" } } },
+      ];
+    }
 
     if (params.status) {
       where.status = params.status;
