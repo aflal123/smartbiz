@@ -400,4 +400,19 @@ export class ProductService {
       },
     });
   }
+
+  /**
+   * Fetch real database stock movements ledger
+   */
+  static async getStockMovements(businessId: string, limit: number = 50) {
+    return prisma.stockMovement.findMany({
+      where: { businessId },
+      take: limit,
+      orderBy: { createdAt: "desc" },
+      include: {
+        product: { select: { name: true, sku: true } },
+        createdBy: { select: { name: true } },
+      },
+    });
+  }
 }

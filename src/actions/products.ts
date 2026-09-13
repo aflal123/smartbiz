@@ -227,3 +227,20 @@ export async function createCategoryAction(formData: unknown): Promise<ActionRes
     };
   }
 }
+
+export async function getStockMovementsAction(): Promise<ActionResult> {
+  try {
+    const { businessId } = await requireTenant();
+    const movements = await ProductService.getStockMovements(businessId);
+    return {
+      success: true,
+      message: "Stock movements loaded",
+      data: movements,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to load stock movements",
+    };
+  }
+}

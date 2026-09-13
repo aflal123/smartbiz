@@ -38,7 +38,11 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { getProductsAction, adjustStockAction } from "@/actions/products";
+import {
+  getProductsAction,
+  adjustStockAction,
+  getStockMovementsAction,
+} from "@/actions/products";
 
 interface Product {
   id: string;
@@ -52,16 +56,9 @@ interface Product {
   category?: { name: string } | null;
 }
 
-const mockMovements = [
-  { id: "m1", date: "2026-09-11", product: "Premium Ceylon Tea 500g", type: "SALE", quantity: -5, prev: 47, next: 42, ref: "INV-2026-0042" },
-  { id: "m2", date: "2026-09-11", product: "Organic Coconut Oil 1L", type: "PURCHASE", quantity: 24, prev: 8, next: 32, ref: "PO-0087" },
-  { id: "m3", date: "2026-09-10", product: "Roasted Cashew Nuts 250g", type: "SALE", quantity: -3, prev: 5, next: 2, ref: "INV-2026-0039" },
-  { id: "m4", date: "2026-09-10", product: "White Basmati Rice 5kg", type: "DAMAGE", quantity: -1, prev: 4, next: 3, ref: "Warehouse inspection" },
-  { id: "m5", date: "2026-09-09", product: "Natural Cinnamon Sticks 100g", type: "ADJUSTMENT", quantity: 10, prev: 20, next: 30, ref: "Physical count correction" },
-];
-
 export default function InventoryPage() {
   const [products, setProducts] = React.useState<Product[]>([]);
+  const [movements, setMovements] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [search, setSearch] = React.useState("");
   const [filter, setFilter] = React.useState<"ALL" | "LOW" | "OUT">("ALL");
@@ -76,21 +73,29 @@ export default function InventoryPage() {
   const [adjustError, setAdjustError] = React.useState<string | null>(null);
   const [successMsg, setSuccessMsg] = React.useState<string | null>(null);
 
-  const loadProducts = React.useCallback(async () => {
+  const loadData = React.useCallback(async () => {
     setLoading(true);
     try {
-      const res = await getProductsAction({ search, limit: 100 });
-      if (res.success && res.data) {
-        setProducts((res.data as any).products || []);
+      const [prodRes, moveRes] = await Promise.all([
+        getProductsAction({ search, limit: 100 }),
+        getStockMovementsAction(),
+      ]);
+      if (prodRes.success && prodRes.data) {
+        setProducts((prodRes.data as any).products || []);
+      }
+      if (moveRes.success && moveRes.data) {
+        setMovements((moveRes.data as any) || []);
       }
     } catch {} finally {
       setLoading(false);
     }
   }, [search]);
 
+  const loadProducts = loadData;
+
   React.useEffect(() => {
-    loadProducts();
-  }, [loadProducts]);
+    loadData();
+  }, [loadData]);
 
   const filteredProducts = React.useMemo(() => {
     return products.filter((p) => {
@@ -309,25 +314,37 @@ export default function InventoryPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockMovements.map((m) => (
-                <TableRow key={m.id}>
-                  <TableCell className="text-xs text-slate-500">{m.date}</TableCell>
-                  <TableCell className="font-medium text-slate-900 text-sm">{m.product}</TableCell>
-                  <TableCell>
-                    <Badge variant={m.type === "PURCHASE" ? "success" : m.type === "SALE" ? "default" : "warning"}>
-                      {m.type}
-                    </Badge>
+              {movements.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center text-xs text-slate-500 py-8">
+                    No stock movements recorded yet
                   </TableCell>
-                  <TableCell className="text-right">
-                    <span className={`font-bold text-sm ${m.quantity > 0 ? "text-emerald-600" : "text-rose-600"}`}>
-                      {m.quantity > 0 ? "+" : ""}{m.quantity}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-right text-sm text-slate-500">{m.prev}</TableCell>
-                  <TableCell className="text-right text-sm font-semibold text-slate-900">{m.next}</TableCell>
-                  <TableCell className="text-xs text-slate-500 font-mono">{m.ref}</TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                movements.map((m) => (
+                  <TableRow key={m.id}>
+                    <TableCell className="text-xs text-slate-500">
+                      {new Date(m.createdAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="font-medium text-slate-900 text-sm">
+                      {m.product?.name || "Product"}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={m.type === "PURCHASE" ? "success" : m.type === "SALE" ? "default" : "warning"}>
+                        {m.type}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <span className={`font-bold text-sm ${m.quantity > 0 ? "text-emerald-600" : "text-rose-600"}`}>
+                        {m.quantity > 0 ? "+" : ""}{m.quantity}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right text-sm text-slate-500">{m.previousStock}</TableCell>
+                    <TableCell className="text-right text-sm font-semibold text-slate-900">{m.newStock}</TableCell>
+                    <TableCell className="text-xs text-slate-500 font-mono">{m.notes || m.referenceId || "N/A"}</TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TabsContent>

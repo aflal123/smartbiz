@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import {
   Search,
   Barcode,
@@ -17,6 +18,7 @@ import {
   AlertCircle,
   RotateCcw,
   Sparkles,
+  Package,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -210,55 +212,37 @@ export default function PosPage() {
     try {
       const res = await createSaleAction(payload);
       if (res.success && res.data) {
+        const sale = res.data as any;
         setCompletedSale({
-          invoiceNumber: (res.data as any).invoiceNumber,
-          date: new Date().toLocaleString(),
-          cashier: "Active Cashier",
-          customerName,
-          items: [...cart],
-          subtotal,
-          discountAmount,
-          taxAmount,
-          grandTotal,
-          paymentMethod,
-          amountPaid: paymentMethod === "CREDIT" ? 0 : tenderedNumeric,
-          changeDue: paymentMethod === "CASH" ? changeDue : 0,
+          invoiceNumber: sale.invoiceNumber,
+          date: new Date(sale.createdAt || Date.now()).toLocaleString(),
+          cashier: sale.cashier?.name || "Cashier",
+          customerName: sale.customer?.name || customerName,
+          items: sale.items?.map((item: any) => ({
+            product: { name: item.product?.name || "Item", sku: item.product?.sku || "" },
+            quantity: item.quantity,
+            unitPrice: item.unitSellingPrice,
+          })) || [...cart],
+          subtotal: Number(sale.subtotal || subtotal),
+          discountAmount: Number(sale.discountAmount || discountAmount),
+          taxAmount: Number(sale.taxAmount || taxAmount),
+          grandTotal: Number(sale.totalAmount || grandTotal),
+          paymentMethod: sale.paymentMethod || paymentMethod,
+          amountPaid: Number(sale.amountPaid || tenderedNumeric),
+          changeDue: Number(sale.changeAmount || changeDue),
         });
 
-        // Deduct local stock for instant feedback
-        setProducts((prev) =>
-          prev.map((p) => {
-            const cartLine = cart.find((c) => c.product.id === p.id);
-            if (cartLine) {
-              return { ...p, stockQuantity: Math.max(0, p.stockQuantity - cartLine.quantity) };
-            }
-            return p;
-          })
-        );
+        // Refresh inventory quantities from database
+        const prodRes = await getProductsAction({ limit: 100 });
+        if (prodRes.success && prodRes.data) {
+          setProducts((prodRes.data as any).products || []);
+        }
 
         setCheckoutOpen(false);
         setReceiptOpen(true);
         clearCart();
       } else {
-        // Mock fallback if offline or db not migrated
-        const mockInvoice = `INV-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
-        setCompletedSale({
-          invoiceNumber: mockInvoice,
-          date: new Date().toLocaleString(),
-          cashier: "Cashier Active",
-          customerName,
-          items: [...cart],
-          subtotal,
-          discountAmount,
-          taxAmount,
-          grandTotal,
-          paymentMethod,
-          amountPaid: paymentMethod === "CREDIT" ? 0 : tenderedNumeric,
-          changeDue: paymentMethod === "CASH" ? changeDue : 0,
-        });
-        setCheckoutOpen(false);
-        setReceiptOpen(true);
-        clearCart();
+        setErrorMsg(res.message || "Transaction error. Unable to complete sale.");
       }
     } catch {
       setErrorMsg("Transaction error. Please try again.");
@@ -319,7 +303,22 @@ export default function PosPage() {
 
         {/* Products Grid */}
         <div className="flex-1 p-4 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
-          {filteredProducts.length === 0 ? (
+          {products.length === 0 ? (
+            <div className="col-span-full flex flex-col items-center justify-center py-16 text-center text-slate-400">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 mb-3">
+                <Package className="h-7 w-7" />
+              </div>
+              <h3 className="text-base font-bold text-slate-800">No Products in Store Inventory</h3>
+              <p className="text-xs text-slate-500 max-w-sm mt-1 mb-4">
+                Your database currently has 0 items. Add products to your inventory catalog to start ringing up sales.
+              </p>
+              <Link href="/products">
+                <Button className="bg-blue-600 hover:bg-blue-500 text-white font-medium gap-2 text-xs">
+                  <Plus className="h-4 w-4" /> Create Product in Inventory
+                </Button>
+              </Link>
+            </div>
+          ) : filteredProducts.length === 0 ? (
             <div className="col-span-full flex flex-col items-center justify-center py-16 text-slate-400">
               <ShoppingCart className="h-10 w-10 text-slate-300 mb-2" />
               <p className="text-sm font-medium">No products match your search</p>

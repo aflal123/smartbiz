@@ -55,26 +55,19 @@ interface BusinessRecord {
   _count?: { users: number; sales: number; products: number };
 }
 
-const mockStats: PlatformStats = {
-  totalBusinesses: 12,
-  activeBusinesses: 10,
-  totalUsers: 47,
-  totalRevenue: 18500000,
-  totalAITokens: 284500,
-  totalAICost: 4.28,
+const emptyStats: PlatformStats = {
+  totalBusinesses: 0,
+  activeBusinesses: 0,
+  totalUsers: 0,
+  totalRevenue: 0,
+  totalAITokens: 0,
+  totalAICost: 0,
 };
 
-const mockBusinesses: BusinessRecord[] = [
-  { id: "b1", name: "SmartBiz Demo Store", slug: "demo-store", email: "owner@smartbiz.lk", currency: "LKR", subscriptionTier: "PROFESSIONAL", isActive: true, createdAt: "2026-01-15", _count: { users: 5, sales: 842, products: 128 } },
-  { id: "b2", name: "Colombo Fresh Market", slug: "colombo-fresh", email: "admin@freshmarket.lk", currency: "LKR", subscriptionTier: "STARTER", isActive: true, createdAt: "2026-03-22", _count: { users: 3, sales: 326, products: 64 } },
-  { id: "b3", name: "TechZone Electronics", slug: "techzone", email: "info@techzone.lk", currency: "LKR", subscriptionTier: "PROFESSIONAL", isActive: true, createdAt: "2026-05-08", _count: { users: 8, sales: 1204, products: 240 } },
-  { id: "b4", name: "Sunset Boutique", slug: "sunset-boutique", email: "sunset@gmail.com", currency: "USD", subscriptionTier: "FREE", isActive: false, createdAt: "2026-07-01", _count: { users: 1, sales: 12, products: 8 } },
-];
-
 export default function AdminPage() {
-  const [stats, setStats] = React.useState<PlatformStats>(mockStats);
-  const [businesses, setBusinesses] = React.useState<BusinessRecord[]>(mockBusinesses);
-  const [loading, setLoading] = React.useState(false);
+  const [stats, setStats] = React.useState<PlatformStats>(emptyStats);
+  const [businesses, setBusinesses] = React.useState<BusinessRecord[]>([]);
+  const [loading, setLoading] = React.useState(true);
   const [search, setSearch] = React.useState("");
   const [page, setPage] = React.useState(1);
   const [totalPages, setTotalPages] = React.useState(1);
