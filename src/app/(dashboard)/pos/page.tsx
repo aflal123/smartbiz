@@ -256,7 +256,7 @@ export default function PosPage() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-7.5rem)] min-h-[650px]">
+    <div className="flex flex-col lg:flex-row gap-6 min-h-[calc(100vh-8rem)] lg:h-[calc(100vh-7.5rem)]">
       {/* LEFT SECTION: Product Catalog & Search (65% width on desktop) */}
       <div className="flex-1 flex flex-col bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
         {/* Search & Barcode Header */}
