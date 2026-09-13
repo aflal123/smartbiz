@@ -13,6 +13,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -38,40 +39,23 @@ interface ReportData {
   topProducts?: { name: string; totalSold: number; revenue: number; profit: number }[];
 }
 
-const mockReport: ReportData = {
-  revenue: 3420000,
-  cogs: 2280000,
-  grossProfit: 1140000,
-  grossMarginPercent: 33.3,
-  totalExpenses: 280000,
-  netProfit: 860000,
-  netMarginPercent: 25.1,
-  salesCount: 842,
-  dailyBreakdown: [
-    { date: "2026-09-11", revenue: 148500, cogs: 98000, grossProfit: 50500, expenses: 8500, netProfit: 42000 },
-    { date: "2026-09-10", revenue: 132800, cogs: 88200, grossProfit: 44600, expenses: 9200, netProfit: 35400 },
-    { date: "2026-09-09", revenue: 156200, cogs: 104100, grossProfit: 52100, expenses: 7800, netProfit: 44300 },
-    { date: "2026-09-08", revenue: 121600, cogs: 81000, grossProfit: 40600, expenses: 12000, netProfit: 28600 },
-    { date: "2026-09-07", revenue: 168400, cogs: 112200, grossProfit: 56200, expenses: 10500, netProfit: 45700 },
-  ],
-  paymentBreakdown: [
-    { method: "CASH", count: 412, total: 1680000 },
-    { method: "CARD", count: 285, total: 1140000 },
-    { method: "BANK_TRANSFER", count: 98, total: 456000 },
-    { method: "CREDIT", count: 47, total: 144000 },
-  ],
-  topProducts: [
-    { name: "Premium Ceylon Tea 500g", totalSold: 145, revenue: 116000, profit: 47850 },
-    { name: "Organic Coconut Oil 1L", totalSold: 84, revenue: 109200, profit: 37800 },
-    { name: "Roasted Cashew Nuts 250g", totalSold: 62, revenue: 77500, profit: 24800 },
-    { name: "Pure Cinnamon Quills 100g", totalSold: 51, revenue: 45900, profit: 16830 },
-    { name: "White Basmati Rice 5kg", totalSold: 78, revenue: 171600, profit: 42900 },
-  ],
+const emptyReport: ReportData = {
+  revenue: 0,
+  cogs: 0,
+  grossProfit: 0,
+  grossMarginPercent: 0,
+  totalExpenses: 0,
+  netProfit: 0,
+  netMarginPercent: 0,
+  salesCount: 0,
+  dailyBreakdown: [],
+  paymentBreakdown: [],
+  topProducts: [],
 };
 
 export default function ReportsPage() {
-  const [report, setReport] = React.useState<ReportData>(mockReport);
-  const [loading, setLoading] = React.useState(false);
+  const [report, setReport] = React.useState<ReportData>(emptyReport);
+  const [loading, setLoading] = React.useState(true);
   const [startDate, setStartDate] = React.useState("");
   const [endDate, setEndDate] = React.useState("");
 

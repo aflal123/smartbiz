@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
+import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -13,14 +14,14 @@ interface AppShellProps {
 
 export function AppShell({
   children,
-  businessName = "SmartBiz Demo Store",
-  userName = "Aflal Ahamed",
+  businessName = "SmartBiz Store",
+  userName = "Merchant Owner",
   userRole = "BUSINESS_OWNER",
   currency = "LKR",
   lowStockCount = 0,
 }: AppShellProps) {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-blue-600 selection:text-white">
       <Sidebar
         businessName={businessName}
         userName={userName}
@@ -32,10 +33,11 @@ export function AppShell({
           currency={currency}
           lowStockCount={lowStockCount}
         />
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-3 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto pb-20 md:pb-8">
           {children}
         </main>
       </div>
+      <MobileBottomNav />
     </div>
   );
 }

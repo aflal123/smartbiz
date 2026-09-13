@@ -18,6 +18,7 @@ import {
   RotateCcw,
   Sparkles,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -44,82 +45,17 @@ interface CartItem {
   unitPrice: number;
 }
 
-const initialMockProducts: Product[] = [
-  {
-    id: "e4a5d3f2-1111-4a1b-8c2d-999999999901",
-    name: "Premium Ceylon Black Tea 500g",
-    sku: "TEA-BLK-500",
-    barcode: "89345001",
-    category: { name: "Beverages" },
-    sellingPrice: 850,
-    costPrice: 520,
-    stockQuantity: 42,
-    unit: "pcs",
-  },
-  {
-    id: "e4a5d3f2-2222-4a1b-8c2d-999999999902",
-    name: "Organic Virgin Coconut Oil 1L",
-    sku: "OIL-COC-1L",
-    barcode: "89345002",
-    category: { name: "Groceries" },
-    sellingPrice: 1350,
-    costPrice: 900,
-    stockQuantity: 8,
-    unit: "bottle",
-  },
-  {
-    id: "e4a5d3f2-3333-4a1b-8c2d-999999999903",
-    name: "Roasted Jumbo Cashew Nuts 250g",
-    sku: "NUT-CSH-250",
-    barcode: "89345003",
-    category: { name: "Snacks" },
-    sellingPrice: 1250,
-    costPrice: 850,
-    stockQuantity: 5,
-    unit: "pack",
-  },
-  {
-    id: "e4a5d3f2-4444-4a1b-8c2d-999999999904",
-    name: "White Basmati Rice Premium 5kg",
-    sku: "RIC-BAS-5KG",
-    barcode: "89345004",
-    category: { name: "Groceries" },
-    sellingPrice: 2200,
-    costPrice: 1650,
-    stockQuantity: 18,
-    unit: "bag",
-  },
-  {
-    id: "e4a5d3f2-5555-4a1b-8c2d-999999999905",
-    name: "Natural Cinnamon Sticks 100g",
-    sku: "SPI-CIN-100",
-    barcode: "89345005",
-    category: { name: "Spices" },
-    sellingPrice: 750,
-    costPrice: 420,
-    stockQuantity: 30,
-    unit: "pack",
-  },
-  {
-    id: "e4a5d3f2-6666-4a1b-8c2d-999999999906",
-    name: "Pure Wild Bee Honey 350g",
-    sku: "HON-WLD-350",
-    barcode: "89345006",
-    category: { name: "Groceries" },
-    sellingPrice: 1600,
-    costPrice: 1100,
-    stockQuantity: 0, // Out of stock demo
-    unit: "jar",
-  },
-];
-
 export default function PosPage() {
-  const [products, setProducts] = React.useState<Product[]>(initialMockProducts);
+  const [products, setProducts] = React.useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState("ALL");
   const [cart, setCart] = React.useState<CartItem[]>([]);
   const [discountPercent, setDiscountPercent] = React.useState<number>(0);
   const [taxRate] = React.useState<number>(0); // 0% default SME sales tax
+  const [loading, setLoading] = React.useState(true);
+
+  // Mobile drawer state
+  const [mobileCartOpen, setMobileCartOpen] = React.useState(false);
 
   // Checkout modal state
   const [checkoutOpen, setCheckoutOpen] = React.useState(false);
@@ -133,16 +69,20 @@ export default function PosPage() {
   const [receiptOpen, setReceiptOpen] = React.useState(false);
   const [completedSale, setCompletedSale] = React.useState<any>(null);
 
-  // Fetch real products from server if available
+  // Fetch real products from server
   React.useEffect(() => {
     async function loadProducts() {
+      setLoading(true);
       try {
-        const res = await getProductsAction();
-        if (res.success && res.data && (res.data as any).products?.length > 0) {
-          setProducts((res.data as any).products);
+        const res = await getProductsAction({ limit: 100 });
+        if (res.success && res.data) {
+          const fetched = (res.data as any).products || [];
+          setProducts(fetched);
         }
       } catch {
-        // Fallback to sample items
+        // Handle error gracefully
+      } finally {
+        setLoading(false);
       }
     }
     loadProducts();

@@ -17,6 +17,7 @@ import {
   Clock,
   RefreshCw,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
@@ -47,89 +48,37 @@ interface MetricsData {
   lowStockProducts: any[];
 }
 
-const mockMetrics: MetricsData = {
-  today: {
-    revenue: 148500,
-    cogs: 98000,
-    grossProfit: 50500,
-    netProfit: 42000,
-    expenses: 8500,
-    salesCount: 38,
-  },
-  month: {
-    revenue: 3420000,
-    cogs: 2280000,
-    grossProfit: 1140000,
-    netProfit: 860000,
-    expenses: 280000,
-    salesCount: 842,
-  },
-  lowStockCount: 3,
-  recentSales: [
-    {
-      id: "sale-1",
-      invoiceNumber: "INV-2026-0042",
-      customerName: "Walk-in Customer",
-      totalAmount: 4850,
-      paymentMethod: "CASH",
-      status: "COMPLETED",
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: "sale-2",
-      invoiceNumber: "INV-2026-0041",
-      customerName: "Kamal Perera",
-      totalAmount: 18200,
-      paymentMethod: "CARD",
-      status: "COMPLETED",
-      createdAt: new Date(Date.now() - 35 * 60 * 1000).toISOString(),
-    },
-    {
-      id: "sale-3",
-      invoiceNumber: "INV-2026-0040",
-      customerName: "Sunil Distributors",
-      totalAmount: 54000,
-      paymentMethod: "BANK_TRANSFER",
-      status: "COMPLETED",
-      createdAt: new Date(Date.now() - 110 * 60 * 1000).toISOString(),
-    },
-    {
-      id: "sale-4",
-      invoiceNumber: "INV-2026-0039",
-      customerName: "Nimal Fernando",
-      totalAmount: 7600,
-      paymentMethod: "CREDIT",
-      status: "PARTIAL",
-      createdAt: new Date(Date.now() - 190 * 60 * 1000).toISOString(),
-    },
-  ],
-  topProducts: [
-    { id: "p1", name: "Premium Ceylon Tea 500g", totalSold: 145, revenue: 116000 },
-    { id: "p2", name: "Organic Coconut Oil 1L", totalSold: 84, revenue: 109200 },
-    { id: "p3", name: "Roasted Cashew Nuts 250g", totalSold: 62, revenue: 77500 },
-    { id: "p4", name: "Pure Cinnamon Quills 100g", totalSold: 51, revenue: 45900 },
-  ],
-  lowStockProducts: [
-    { id: "ls1", name: "Organic Coconut Oil 1L", sku: "OIL-COC-1L", stockQuantity: 4, lowStockThreshold: 10 },
-    { id: "ls2", name: "Roasted Cashew Nuts 250g", sku: "NUT-CSH-250", stockQuantity: 2, lowStockThreshold: 15 },
-    { id: "ls3", name: "White Basmati Rice 5kg", sku: "RIC-BAS-5KG", stockQuantity: 3, lowStockThreshold: 12 },
-  ],
+const emptyMetrics: MetricsData = {
+  today: { revenue: 0, cogs: 0, grossProfit: 0, netProfit: 0, expenses: 0, salesCount: 0 },
+  month: { revenue: 0, cogs: 0, grossProfit: 0, netProfit: 0, expenses: 0, salesCount: 0 },
+  lowStockCount: 0,
+  recentSales: [],
+  topProducts: [],
+  lowStockProducts: [],
 };
 
 export default function DashboardPage() {
   const [period, setPeriod] = React.useState<"today" | "month">("today");
-  const [metrics, setMetrics] = React.useState<MetricsData>(mockMetrics);
-  const [loading, setLoading] = React.useState(false);
+  const [metrics, setMetrics] = React.useState<MetricsData>(emptyMetrics);
+  const [loading, setLoading] = React.useState(true);
 
   const loadData = React.useCallback(async () => {
     setLoading(true);
     try {
       const res = await getDashboardMetricsAction();
       if (res.success && res.data) {
-        setMetrics(res.data as MetricsData);
+        const d = res.data as any;
+        setMetrics({
+          today: d.today || emptyMetrics.today,
+          month: d.month || d.thisMonth || emptyMetrics.month,
+          lowStockCount: d.lowStockCount ?? d.inventory?.lowStockCount ?? 0,
+          recentSales: d.recentSales || [],
+          topProducts: d.topProducts || [],
+          lowStockProducts: d.lowStockProducts || d.inventory?.lowStockProducts || [],
+        });
       }
     } catch {
-      // Fallback to sample data for frictionless preview
+      // Retain clean empty metrics
     } finally {
       setLoading(false);
     }
@@ -382,15 +331,15 @@ export default function DashboardPage() {
                 </CardTitle>
               </div>
               <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-800">
-                {metrics.lowStockProducts.length} Items
+                {(metrics?.lowStockProducts || []).length} Items
               </span>
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
-            {metrics.lowStockProducts.length === 0 ? (
+            {(metrics?.lowStockProducts || []).length === 0 ? (
               <p className="text-xs text-slate-500 py-4 text-center">All inventory levels healthy</p>
             ) : (
-              metrics.lowStockProducts.map((p) => (
+              (metrics?.lowStockProducts || []).map((p) => (
                 <div
                   key={p.id}
                   className="flex items-center justify-between p-2.5 rounded-lg border border-amber-100 bg-amber-50/40 text-xs"
