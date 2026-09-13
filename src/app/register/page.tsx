@@ -112,7 +112,7 @@ export default function RegisterPage() {
             </div>
             <div className="flex flex-col text-left">
               <span className="text-lg font-bold tracking-tight text-white">
-                SmartBiz <span className="text-blue-400 font-semibold text-xs">V2</span>
+                SmartBiz
               </span>
               <span className="text-[11px] text-slate-400">Enterprise ERP & POS Suite</span>
             </div>

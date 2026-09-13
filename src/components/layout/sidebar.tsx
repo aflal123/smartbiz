@@ -82,7 +82,7 @@ export function Sidebar({
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-bold tracking-tight text-white">
-                SmartBiz <span className="text-blue-400 font-semibold text-xs">v2</span>
+                SmartBiz
               </span>
               <span className="text-xs text-slate-400 truncate max-w-[140px]">
                 {businessName}

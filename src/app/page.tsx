@@ -28,7 +28,7 @@ export default function LandingPage() {
             </div>
             <div className="flex flex-col">
               <span className="text-base font-bold tracking-tight text-white">
-                SmartBiz <span className="text-blue-400 font-semibold text-xs">V2</span>
+                SmartBiz
               </span>
               <span className="text-[11px] text-slate-400">
                 AI-Powered SME ERP & POS
@@ -245,7 +245,7 @@ export default function LandingPage() {
             </Link>
           </div>
           <div className="mt-12 text-xs text-slate-500">
-            SmartBiz V2 © 2026. All rights reserved. Architected for modern retail, wholesale & service SMEs.
+            SmartBiz © 2026. All rights reserved. Architected for modern retail, wholesale & service SMEs.
           </div>
         </div>
       </footer>

@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SmartBiz V2 — Enterprise SME ERP & POS Suite",
+  title: "SmartBiz — Enterprise SME ERP & POS Suite",
   description: "AI-Powered Business Management Suite for SMEs",
 };
 

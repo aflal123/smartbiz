@@ -52,7 +52,7 @@ export default function ForgotPasswordPage() {
             </div>
             <div className="flex flex-col text-left">
               <span className="text-xl font-bold tracking-tight text-white">
-                SmartBiz <span className="text-blue-400 font-semibold text-sm">V2</span>
+                SmartBiz
               </span>
               <span className="text-xs text-slate-400">Security Recovery</span>
             </div>
