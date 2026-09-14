@@ -25,7 +25,7 @@ export function MobileBottomNav() {
   const pathname = usePathname();
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 block md:hidden bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 text-slate-400 px-2 py-1.5 shadow-2xl">
+    <div className="fixed bottom-0 left-0 right-0 z-50 block md:hidden bg-white/95 dark:bg-black/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 px-2 py-1.5 shadow-2xl transition-colors">
       <div className="flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -39,18 +39,18 @@ export function MobileBottomNav() {
               href={item.href}
               className={cn(
                 "relative flex flex-col items-center justify-center py-1 px-2 min-w-[60px] rounded-xl transition-all duration-200",
-                isActive ? "text-blue-400 font-medium" : "hover:text-slate-200"
+                isActive ? "text-slate-900 dark:text-white font-bold" : "hover:text-slate-900 dark:hover:text-slate-200"
               )}
             >
               {isActive && (
                 <motion.div
                   layoutId="activeTabBadge"
-                  className="absolute inset-0 bg-blue-600/15 border border-blue-500/30 rounded-xl"
+                  className="absolute inset-0 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-xl"
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}
-              <Icon className={cn("h-5 w-5 mb-0.5 relative z-10", isActive && "text-blue-400 scale-110")} />
-              <span className="text-[10px] tracking-tight relative z-10 font-medium">{item.label}</span>
+              <Icon className={cn("h-5 w-5 mb-0.5 relative z-10", isActive && "text-slate-950 dark:text-white scale-110")} />
+              <span className="text-[10px] tracking-tight relative z-10 font-semibold">{item.label}</span>
             </Link>
           );
         })}

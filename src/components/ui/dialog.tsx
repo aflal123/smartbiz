@@ -61,7 +61,7 @@ export function DialogContent({
   return (
     <div
       className={cn(
-        "relative mx-auto w-full max-w-lg rounded-xl border border-slate-200 bg-white p-6 shadow-xl transition-all duration-200",
+        "relative mx-auto w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-6 shadow-2xl transition-all duration-200",
         className
       )}
       onClick={(e) => e.stopPropagation()}
@@ -71,7 +71,7 @@ export function DialogContent({
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-sm p-1 text-slate-400 opacity-70 hover:opacity-100 hover:text-slate-600 focus:outline-none cursor-pointer"
+          className="absolute right-4 top-4 rounded-lg p-1.5 text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none cursor-pointer transition-colors"
         >
           <X className="h-4 w-4" />
           <span className="sr-only">Close</span>
@@ -101,7 +101,7 @@ export function DialogFooter({
   return (
     <div
       className={cn(
-        "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 pt-4 border-t border-slate-100 mt-6",
+        "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 pt-4 border-t border-slate-200 dark:border-slate-800 mt-6",
         className
       )}
       {...props}
@@ -115,7 +115,7 @@ export function DialogTitle({
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn("text-lg font-semibold leading-none tracking-tight text-slate-900", className)}
+      className={cn("text-lg font-bold leading-none tracking-tight text-slate-900 dark:text-white", className)}
       {...props}
     />
   );
@@ -127,7 +127,7 @@ export function DialogDescription({
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
-      className={cn("text-sm text-slate-500", className)}
+      className={cn("text-sm text-slate-500 dark:text-slate-400", className)}
       {...props}
     />
   );

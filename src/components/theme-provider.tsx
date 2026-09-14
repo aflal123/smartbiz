@@ -14,19 +14,17 @@ const ThemeContext = React.createContext<ThemeContextType | undefined>(undefined
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = React.useState<Theme>("dark");
+  const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
+    setMounted(true);
     const savedTheme = localStorage.getItem("smartbiz_theme") as Theme | null;
-    if (savedTheme && (savedTheme === "light" || savedTheme === "dark")) {
-      setThemeState(savedTheme);
-      if (savedTheme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    } else {
-      // Default to dark mode for sleek premium look
+    const activeTheme = savedTheme === "light" ? "light" : "dark";
+    setThemeState(activeTheme);
+    if (activeTheme === "dark") {
       document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
     }
   }, []);
 
@@ -58,3 +56,4 @@ export function useTheme() {
   }
   return context;
 }
+

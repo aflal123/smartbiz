@@ -21,7 +21,7 @@ export function AppShell({
   lowStockCount = 0,
 }: AppShellProps) {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-black text-slate-900 dark:text-slate-100 transition-colors duration-200 selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
       <Sidebar
         businessName={businessName}
         userName={userName}
