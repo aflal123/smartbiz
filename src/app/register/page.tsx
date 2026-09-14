@@ -98,16 +98,15 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4 sm:p-6 selection:bg-blue-600 selection:text-white relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4 sm:p-6 selection:bg-white selection:text-black relative overflow-hidden">
       {/* Background glow effects */}
-      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-600/15 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-purple-600/15 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-white/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="w-full max-w-lg relative z-10 my-8">
         {/* Brand Header */}
         <div className="text-center mb-6">
           <Link href="/" className="inline-flex items-center gap-2.5 mb-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white font-black text-xl shadow-lg shadow-blue-600/30">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-black font-black text-xl shadow-xl">
               S
             </div>
             <div className="flex flex-col text-left">
@@ -149,7 +148,7 @@ export default function RegisterPage() {
                       placeholder="Jane Doe"
                       value={formData.name}
                       onChange={handleChange}
-                      className="pl-9 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
+                      className="pl-9 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-white"
                     />
                   </div>
                 </div>
@@ -165,7 +164,7 @@ export default function RegisterPage() {
                       placeholder="owner@company.com"
                       value={formData.email}
                       onChange={handleChange}
-                      className="pl-9 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
+                      className="pl-9 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-white"
                     />
                   </div>
                 </div>
@@ -182,7 +181,7 @@ export default function RegisterPage() {
                       placeholder="Apex Retailers Ltd"
                       value={formData.businessName}
                       onChange={handleChange}
-                      className="pl-9 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
+                      className="pl-9 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-white"
                     />
                   </div>
                 </div>
@@ -195,7 +194,7 @@ export default function RegisterPage() {
                       name="currency"
                       value={formData.currency}
                       onChange={handleChange}
-                      className="pl-9 bg-slate-950 border-slate-800 text-white focus-visible:ring-blue-500"
+                      className="pl-9 bg-slate-950 border-slate-800 text-white focus-visible:ring-white"
                     >
                       <option value="LKR">LKR (Sri Lankan Rupee)</option>
                       <option value="USD">USD (US Dollar)</option>
@@ -219,7 +218,7 @@ export default function RegisterPage() {
                     placeholder="+94 77 123 4567"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="pl-9 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
+                    className="pl-9 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-white"
                   />
                 </div>
               </div>
@@ -236,7 +235,7 @@ export default function RegisterPage() {
                       placeholder="At least 8 chars"
                       value={formData.password}
                       onChange={handleChange}
-                      className="pl-9 pr-10 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
+                      className="pl-9 pr-10 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-white"
                     />
                     <button
                       type="button"
@@ -264,7 +263,7 @@ export default function RegisterPage() {
                       placeholder="Repeat password"
                       value={formData.confirmPassword}
                       onChange={handleChange}
-                      className="pl-9 pr-10 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
+                      className="pl-9 pr-10 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-white"
                     />
                     <button
                       type="button"
@@ -286,7 +285,7 @@ export default function RegisterPage() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-10 bg-blue-600 hover:bg-blue-500 text-white font-medium shadow-md shadow-blue-600/20"
+                  className="w-full h-10 bg-white hover:bg-slate-200 text-black font-bold shadow-md cursor-pointer"
                 >
                   {loading ? (
                     <span>Sending Verification Code...</span>
@@ -305,7 +304,7 @@ export default function RegisterPage() {
             <span>Already have an account? </span>
             <Link
               href="/login"
-              className="ml-1.5 font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+              className="ml-1.5 font-semibold text-white hover:underline transition-colors"
             >
               Sign in instead
             </Link>

@@ -158,7 +158,7 @@ export default function ExpensesPage() {
         <Button variant="outline" size="sm" onClick={() => setIncomeOpen(true)} className="gap-1.5">
           <Plus className="h-3.5 w-3.5" /><span>Record Income</span>
         </Button>
-        <Button size="sm" onClick={() => setExpenseOpen(true)} className="gap-1.5 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button size="sm" onClick={() => setExpenseOpen(true)} className="gap-1.5 bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold shadow-xs">
           <Plus className="h-4 w-4" /><span>Record Expense</span>
         </Button>
       </PageHeader>
@@ -177,10 +177,10 @@ export default function ExpensesPage() {
             <div className="h-10 w-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center"><DollarSign className="h-5 w-5" /></div>
           </CardContent>
         </Card>
-        <Card className="border-blue-200 shadow-xs">
+        <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
           <CardContent className="p-4 flex items-center justify-between">
-            <div><p className="text-xs text-blue-600 uppercase font-semibold">Net Impact</p><MoneyDisplay amount={totalIncomes - totalExpenses} variant={totalIncomes - totalExpenses >= 0 ? "profit" : "loss"} className="text-xl font-bold mt-1" /></div>
-            <div className="h-10 w-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><CreditCard className="h-5 w-5" /></div>
+            <div><p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Net Impact</p><MoneyDisplay amount={totalIncomes - totalExpenses} variant={totalIncomes - totalExpenses >= 0 ? "profit" : "loss"} className="text-xl font-bold mt-1" /></div>
+            <div className="h-10 w-10 rounded-xl bg-black dark:bg-white text-white dark:text-black flex items-center justify-center shadow-xs"><CreditCard className="h-5 w-5" /></div>
           </CardContent>
         </Card>
       </div>
@@ -194,7 +194,7 @@ export default function ExpensesPage() {
         <TabsContent value="expenses">
           {expenses.length === 0 && !loading ? (
             <EmptyState icon={CreditCard} title="No Expenses Recorded" description="Record your first business expense to track operating costs." action={
-              <Button onClick={() => setExpenseOpen(true)} className="gap-1.5 bg-blue-600 text-white"><Plus className="h-4 w-4" />Record Expense</Button>
+              <Button onClick={() => setExpenseOpen(true)} className="gap-1.5 bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold shadow-xs"><Plus className="h-4 w-4" />Record Expense</Button>
             } />
           ) : (
             <Table>
@@ -220,7 +220,7 @@ export default function ExpensesPage() {
         <TabsContent value="incomes">
           {incomes.length === 0 && !loading ? (
             <EmptyState icon={DollarSign} title="No Additional Income" description="Record non-sales income like rental, interest, or consulting fees." action={
-              <Button onClick={() => setIncomeOpen(true)} className="gap-1.5 bg-blue-600 text-white"><Plus className="h-4 w-4" />Record Income</Button>
+              <Button onClick={() => setIncomeOpen(true)} className="gap-1.5 bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold shadow-xs"><Plus className="h-4 w-4" />Record Income</Button>
             } />
           ) : (
             <Table>
@@ -268,7 +268,7 @@ export default function ExpensesPage() {
             <div className="space-y-1"><label className="text-xs font-medium text-slate-700">Notes</label><Textarea value={expForm.notes} onChange={(e) => setExpForm((p) => ({ ...p, notes: e.target.value }))} placeholder="Additional details..." rows={2} /></div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setExpenseOpen(false)}>Cancel</Button>
-              <Button type="submit" disabled={expCreating} className="bg-blue-600 hover:bg-blue-700 text-white">{expCreating ? "Recording..." : "Save Expense"}</Button>
+              <Button type="submit" disabled={expCreating} className="bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold">{expCreating ? "Recording..." : "Save Expense"}</Button>
             </DialogFooter>
           </form>
         </DialogContent>

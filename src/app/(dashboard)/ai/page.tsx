@@ -218,14 +218,14 @@ export default function AIPage() {
                   <div className="space-y-1"><label className="text-xs font-medium text-slate-700">Recipient Name</label><Input value={emailForm.recipientName} onChange={(e) => setEmailForm((p) => ({ ...p, recipientName: e.target.value }))} placeholder="Nimal & Co Trading" /></div>
                   <div className="space-y-1"><label className="text-xs font-medium text-slate-700">Purpose</label><Input value={emailForm.purpose} onChange={(e) => setEmailForm((p) => ({ ...p, purpose: e.target.value }))} placeholder="Request bulk tea price quote for Q4" /></div>
                   <div className="space-y-1"><label className="text-xs font-medium text-slate-700">Additional Details</label><Textarea value={emailForm.details} onChange={(e) => setEmailForm((p) => ({ ...p, details: e.target.value }))} placeholder="We need 500 units of Ceylon Tea..." rows={3} /></div>
-                  <Button type="submit" disabled={emailLoading} className="bg-blue-600 hover:bg-blue-700 text-white gap-2 w-full">
+                  <Button type="submit" disabled={emailLoading} className="bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold gap-2 w-full shadow-xs">
                     {emailLoading ? <><Loader2 className="h-4 w-4 animate-spin" />Drafting...</> : <><Mail className="h-4 w-4" />Generate Email Draft</>}
                   </Button>
                 </form>
               </CardContent>
             </Card>
             {emailDraft && (
-              <Card className="border-blue-200 shadow-xs">
+              <Card className="border-slate-300 dark:border-slate-800 shadow-xs bg-slate-50 dark:bg-slate-900">
                 <CardHeader className="flex flex-row items-center justify-between"><CardTitle className="text-base">Generated Draft</CardTitle>
                   <button type="button" onClick={() => handleCopy(emailDraft)} className="p-1.5 rounded-md border border-slate-200 text-slate-400 hover:text-slate-700">
                     {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
@@ -255,7 +255,7 @@ export default function AIPage() {
                   <div className="space-y-1"><label className="text-xs font-medium text-slate-700">Campaign Goal</label><Input value={mktForm.campaignGoal} onChange={(e) => setMktForm((p) => ({ ...p, campaignGoal: e.target.value }))} placeholder="Drive weekend foot traffic to store" /></div>
                   <div className="space-y-1"><label className="text-xs font-medium text-slate-700">Discount / Offer</label><Input value={mktForm.discountOffer} onChange={(e) => setMktForm((p) => ({ ...p, discountOffer: e.target.value }))} placeholder="Buy 3, Get 1 Free" /></div>
                   <div className="space-y-1"><label className="text-xs font-medium text-slate-700">Additional Notes</label><Textarea value={mktForm.additionalNotes} onChange={(e) => setMktForm((p) => ({ ...p, additionalNotes: e.target.value }))} rows={2} /></div>
-                  <Button type="submit" disabled={mktLoading} className="bg-blue-600 hover:bg-blue-700 text-white gap-2 w-full">
+                  <Button type="submit" disabled={mktLoading} className="bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold gap-2 w-full shadow-xs">
                     {mktLoading ? <><Loader2 className="h-4 w-4 animate-spin" />Generating...</> : <><Megaphone className="h-4 w-4" />Generate Marketing Copy</>}
                   </Button>
                 </form>
@@ -287,7 +287,7 @@ export default function AIPage() {
                   <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                     <div className={`max-w-[80%] rounded-xl p-3 text-sm ${
                       msg.role === "user"
-                        ? "bg-blue-600 text-white rounded-br-sm"
+                        ? "bg-black text-white dark:bg-white dark:text-black font-semibold rounded-br-sm"
                         : "bg-slate-100 text-slate-800 rounded-bl-sm"
                     }`}>
                       {msg.role === "assistant" && <Sparkles className="h-3 w-3 text-purple-500 mb-1 inline mr-1" />}
@@ -311,7 +311,7 @@ export default function AIPage() {
                   className="flex-1"
                   disabled={chatLoading}
                 />
-                <Button type="submit" disabled={chatLoading || !chatInput.trim()} className="bg-blue-600 hover:bg-blue-700 text-white px-4">
+                <Button type="submit" disabled={chatLoading || !chatInput.trim()} className="bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold px-4 shadow-xs">
                   <Send className="h-4 w-4" />
                 </Button>
               </form>

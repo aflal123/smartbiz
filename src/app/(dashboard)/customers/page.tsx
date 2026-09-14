@@ -139,7 +139,7 @@ export default function CustomersPage() {
       )}
 
       <PageHeader title="Customers" description="Manage customer directory, outstanding balances, and collect payments.">
-        <Button size="sm" onClick={() => setCreateOpen(true)} className="gap-1.5 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button size="sm" onClick={() => setCreateOpen(true)} className="gap-1.5 bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold shadow-xs">
           <Plus className="h-4 w-4" /><span>Add Customer</span>
         </Button>
       </PageHeader>
@@ -149,7 +149,7 @@ export default function CustomersPage() {
         <Card className="border-slate-200 shadow-xs">
           <CardContent className="p-4 flex items-center justify-between">
             <div><p className="text-xs text-slate-500 uppercase font-semibold">Total Customers</p><p className="text-xl font-bold text-slate-900 mt-1">{customers.length}</p></div>
-            <div className="h-10 w-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><Users className="h-5 w-5" /></div>
+            <div className="h-10 w-10 rounded-xl bg-black dark:bg-white text-white dark:text-black flex items-center justify-center shadow-xs"><Users className="h-5 w-5" /></div>
           </CardContent>
         </Card>
         <Card className="border-amber-200 shadow-xs">
@@ -180,7 +180,7 @@ export default function CustomersPage() {
       {/* Table */}
       {customers.length === 0 && !loading ? (
         <EmptyState icon={Users} title="No Customers Yet" description="Add your first customer to start tracking purchase history and credit." action={
-          <Button onClick={() => setCreateOpen(true)} className="gap-1.5 bg-blue-600 text-white"><Plus className="h-4 w-4" />Add Customer</Button>
+          <Button onClick={() => setCreateOpen(true)} className="gap-1.5 bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold shadow-xs"><Plus className="h-4 w-4" />Add Customer</Button>
         } />
       ) : (
         <Table>
@@ -245,7 +245,7 @@ export default function CustomersPage() {
             <div className="space-y-1"><label className="text-xs font-medium text-slate-700">Notes</label><Textarea name="notes" value={formData.notes} onChange={handleFieldChange} placeholder="VIP customer, bulk buyer..." rows={2} /></div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setCreateOpen(false)}>Cancel</Button>
-              <Button type="submit" disabled={creating} className="bg-blue-600 hover:bg-blue-700 text-white">{creating ? "Creating..." : "Add Customer"}</Button>
+              <Button type="submit" disabled={creating} className="bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold">{creating ? "Creating..." : "Add Customer"}</Button>
             </DialogFooter>
           </form>
         </DialogContent>

@@ -49,16 +49,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4 sm:p-6 selection:bg-blue-600 selection:text-white relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4 sm:p-6 selection:bg-white selection:text-black relative overflow-hidden">
       {/* Background glow effects */}
-      <div className="absolute top-1/4 left-1/3 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-600/15 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-indigo-600/15 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/4 left-1/3 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/5 blur-[120px] rounded-full pointer-events-none" />
 
-      <div className="w-full max-w-md relative z-10">
-        {/* Brand Header */}
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2.5 mb-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white font-black text-2xl shadow-lg shadow-blue-600/30">
+      <div className="w-full max-w-md space-y-6 relative z-10">
+        {/* Header Branding */}
+        <div className="flex flex-col items-center text-center">
+          <Link href="/" className="flex items-center gap-2 mb-4 group">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-black font-black text-2xl shadow-xl">
               S
             </div>
             <div className="flex flex-col text-left">
@@ -99,17 +98,17 @@ export default function LoginPage() {
                     placeholder="name@company.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-9 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
+                    className="pl-9 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-white"
                   />
                 </div>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-medium text-slate-300">Password</label>
+                  <label className="text-xs font-semibold text-slate-300">Password</label>
                   <Link
                     href="/forgot-password"
-                    className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                    className="text-xs text-slate-300 hover:text-white transition-colors"
                   >
                     Forgot password?
                   </Link>
@@ -122,7 +121,7 @@ export default function LoginPage() {
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-9 pr-10 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
+                    className="pl-9 pr-10 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-white"
                   />
                   <button
                     type="button"
@@ -139,47 +138,39 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <div className="pt-2">
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full h-10 bg-blue-600 hover:bg-blue-500 text-white font-medium shadow-md shadow-blue-600/20"
-                >
-                  {loading ? (
-                    <span>Authenticating...</span>
-                  ) : (
-                    <span className="inline-flex items-center gap-2">
-                      Sign In to Dashboard
-                      <ArrowRight className="h-4 w-4" />
-                    </span>
-                  )}
-                </Button>
-              </div>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full h-11 bg-white text-black hover:bg-slate-200 font-bold shadow-xs cursor-pointer"
+              >
+                {loading ? "Signing in..." : "Sign in to Dashboard"}
+              </Button>
 
               {/* Demo auto-fill banner */}
-              <div className="pt-2 border-t border-slate-800/80">
+              <div className="mt-5 pt-5 border-t border-slate-800 text-center text-xs text-slate-400">
+                Need to test demo store credentials?{" "}
                 <button
                   type="button"
                   onClick={handleDemoFill}
-                  className="w-full flex items-center justify-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 py-1 transition-colors"
+                  className="text-white hover:underline font-semibold inline-flex items-center gap-1 ml-1 cursor-pointer"
                 >
-                  <Sparkles className="h-3 w-3 text-blue-400" />
-                  <span>Click to auto-fill sample test credentials</span>
+                  <Sparkles className="h-3 w-3 text-white" />
+                  Fill Demo Merchant
                 </button>
               </div>
             </CardContent>
           </form>
-
-          <CardFooter className="pt-2 pb-6 border-t border-slate-800/80 flex justify-center text-xs text-slate-400">
-            <span>Don&apos;t have a business account? </span>
-            <Link
-              href="/register"
-              className="ml-1.5 font-semibold text-blue-400 hover:text-blue-300 transition-colors"
-            >
-              Register your business
-            </Link>
-          </CardFooter>
         </Card>
+
+        <p className="text-center text-xs text-slate-500">
+          Don&apos;t have a business account yet?
+          <Link
+            href="/register"
+            className="ml-1.5 font-semibold text-white hover:underline transition-colors"
+          >
+            Register your business
+          </Link>
+        </p>
       </div>
     </div>
   );

@@ -133,9 +133,9 @@ export default function AdminPage() {
 
       {/* Platform KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-blue-200 shadow-xs">
+        <Card className="border-slate-300 dark:border-slate-800 shadow-xs">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-1"><p className="text-xs text-blue-600 uppercase font-semibold">Total Businesses</p><Building2 className="h-4 w-4 text-blue-600" /></div>
+            <div className="flex items-center justify-between mb-1"><p className="text-xs text-slate-900 dark:text-white uppercase font-semibold">Total Businesses</p><Building2 className="h-4 w-4 text-slate-900 dark:text-white" /></div>
             <p className="text-2xl font-bold text-slate-900">{stats.totalBusinesses}</p>
             <p className="text-xs text-slate-500">{stats.activeBusinesses} active</p>
           </CardContent>
@@ -259,7 +259,7 @@ export default function AdminPage() {
                   <div key={i} className="flex items-center gap-3 p-2.5 rounded-lg border border-slate-100 hover:bg-slate-50 text-xs">
                     <span className="font-mono text-slate-400 shrink-0">{log.time}</span>
                     <span className={`shrink-0 h-2 w-2 rounded-full ${
-                      log.severity === "danger" ? "bg-rose-500" : log.severity === "warning" ? "bg-amber-500" : "bg-blue-500"
+                      log.severity === "danger" ? "bg-rose-500" : log.severity === "warning" ? "bg-amber-500" : "bg-black dark:bg-white"
                     }`} />
                     <span className="font-semibold text-slate-700 uppercase tracking-wider">{log.action}</span>
                     <span className="text-slate-500 flex-1 truncate">{log.detail}</span>

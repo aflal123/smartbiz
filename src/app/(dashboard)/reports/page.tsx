@@ -89,14 +89,14 @@ export default function ReportsPage() {
         <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-auto max-w-[160px]" />
         <span className="text-xs text-slate-400">to</span>
         <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-auto max-w-[160px]" />
-        <Button size="sm" onClick={loadReport} className="bg-blue-600 hover:bg-blue-700 text-white">Generate Report</Button>
+        <Button size="sm" onClick={loadReport} className="bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold shadow-xs">Generate Report</Button>
       </div>
 
       {/* P&L Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="border-slate-200 shadow-xs">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-1"><p className="text-xs text-slate-500 uppercase font-semibold">Revenue</p><DollarSign className="h-4 w-4 text-blue-600" /></div>
+            <div className="flex items-center justify-between mb-1"><p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Revenue</p><DollarSign className="h-4 w-4 text-slate-900 dark:text-white" /></div>
             <MoneyDisplay amount={report.revenue} className="text-xl font-bold text-slate-900" />
             <p className="text-xs text-slate-500 mt-0.5">{report.salesCount} transactions</p>
           </CardContent>
@@ -118,11 +118,11 @@ export default function ReportsPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-blue-200 shadow-xs bg-gradient-to-br from-white to-blue-50/40">
+        <Card className="border-slate-300 dark:border-slate-800 shadow-xs bg-slate-50 dark:bg-slate-900">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-1"><p className="text-xs text-blue-700 uppercase font-bold">Net Profit</p><TrendingUp className="h-4 w-4 text-blue-700" /></div>
-            <MoneyDisplay amount={report.netProfit} className="text-xl font-bold text-blue-700" />
-            <div className="flex items-center gap-1 mt-0.5"><span className="bg-blue-100/70 px-1.5 py-0.5 rounded text-[11px] font-bold text-blue-700">{report.netMarginPercent?.toFixed(1) || "0.0"}%</span><span className="text-[11px] text-slate-500">net margin</span></div>
+            <div className="flex items-center justify-between mb-1"><p className="text-xs text-slate-900 dark:text-white uppercase font-bold">Net Profit</p><TrendingUp className="h-4 w-4 text-slate-900 dark:text-white" /></div>
+            <MoneyDisplay amount={report.netProfit} className="text-xl font-bold text-slate-900 dark:text-white" />
+            <div className="flex items-center gap-1 mt-0.5"><span className="bg-black dark:bg-white text-white dark:text-black px-1.5 py-0.5 rounded text-[11px] font-bold">{report.netMarginPercent?.toFixed(1) || "0.0"}%</span><span className="text-[11px] text-slate-500 dark:text-slate-400">net margin</span></div>
           </CardContent>
         </Card>
       </div>
@@ -139,7 +139,7 @@ export default function ReportsPage() {
             <div className="flex justify-between py-2 border-b border-slate-100"><span className="text-slate-600">Cost of Goods Sold (COGS)</span><span className="font-semibold text-rose-600">-<MoneyDisplay amount={report.cogs} /></span></div>
             <div className="flex justify-between py-2 border-b border-slate-200 bg-emerald-50/50 px-3 rounded-lg"><span className="font-bold text-emerald-800">Gross Profit</span><MoneyDisplay amount={report.grossProfit} variant="profit" className="font-bold text-lg" /></div>
             <div className="flex justify-between py-2 border-b border-slate-100"><span className="text-slate-600">Operating Expenses</span><span className="font-semibold text-rose-600">-<MoneyDisplay amount={report.totalExpenses} /></span></div>
-            <div className="flex justify-between py-3 bg-blue-50/70 px-3 rounded-lg"><span className="font-bold text-blue-800 text-base">True Net Profit</span><MoneyDisplay amount={report.netProfit} className="font-bold text-xl text-blue-700" /></div>
+            <div className="flex justify-between py-3 bg-slate-100 dark:bg-slate-800/80 px-3 rounded-xl border border-slate-200 dark:border-slate-700"><span className="font-bold text-slate-900 dark:text-white text-base">True Net Profit</span><MoneyDisplay amount={report.netProfit} className="font-bold text-xl text-slate-900 dark:text-white" /></div>
           </div>
         </CardContent>
       </Card>

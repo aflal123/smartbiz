@@ -179,7 +179,7 @@ export default function InventoryPage() {
               <p className="text-xs text-slate-500 uppercase font-semibold tracking-wider">Total Inventory Value</p>
               <MoneyDisplay amount={totalValue} className="text-xl font-bold text-slate-900 mt-1" />
             </div>
-            <div className="h-10 w-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+            <div className="h-10 w-10 rounded-xl bg-black dark:bg-white text-white dark:text-black flex items-center justify-center shadow-xs">
               <Boxes className="h-5 w-5" />
             </div>
           </CardContent>
@@ -236,7 +236,7 @@ export default function InventoryPage() {
                   onClick={() => setFilter(f)}
                   className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
                     filter === f
-                      ? "bg-blue-600 text-white shadow-xs"
+                      ? "bg-black text-white dark:bg-white dark:text-black font-bold shadow-xs"
                       : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
@@ -391,7 +391,7 @@ export default function InventoryPage() {
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setAdjustOpen(false)}>Cancel</Button>
-              <Button type="submit" disabled={adjusting} className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Button type="submit" disabled={adjusting} className="bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold">
                 {adjusting ? "Processing..." : "Confirm Adjustment"}
               </Button>
             </DialogFooter>

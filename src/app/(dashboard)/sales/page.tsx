@@ -140,7 +140,7 @@ export default function SalesPage() {
               type="button"
               onClick={() => { setStatusFilter(s); setPage(1); }}
               className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
-                statusFilter === s ? "bg-blue-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
+                statusFilter === s ? "bg-black text-white dark:bg-white dark:text-black font-bold shadow-xs" : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               }`}
             >
               {s || "All"}
@@ -173,7 +173,7 @@ export default function SalesPage() {
           <TableBody>
             {sales.map((s) => (
               <TableRow key={s.id}>
-                <TableCell className="font-mono font-semibold text-blue-600 text-sm">{s.invoiceNumber}</TableCell>
+                <TableCell className="font-mono font-semibold text-slate-900 dark:text-white text-sm">{s.invoiceNumber}</TableCell>
                 <TableCell className="text-xs text-slate-500">{formatDateTime(s.createdAt)}</TableCell>
                 <TableCell className="text-sm text-slate-700">{s.customer?.name || "Walk-in"}</TableCell>
                 <TableCell className="text-sm text-slate-500">{s.cashier?.name || "—"}</TableCell>
@@ -193,7 +193,7 @@ export default function SalesPage() {
                     <button
                       type="button"
                       onClick={() => { setViewSale(s); setViewOpen(true); }}
-                      className="p-1.5 rounded-md text-slate-400 hover:text-blue-600 hover:bg-blue-50"
+                      className="p-1.5 rounded-md text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
                       title="View receipt"
                     >
                       <Eye className="h-3.5 w-3.5" />

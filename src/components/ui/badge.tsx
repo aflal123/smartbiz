@@ -7,13 +7,13 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "border-transparent bg-blue-600 text-white shadow hover:bg-blue-700",
-        secondary: "border-transparent bg-slate-100 text-slate-900 hover:bg-slate-200",
-        destructive: "border-transparent bg-red-500 text-white shadow hover:bg-red-600",
-        outline: "text-slate-900 border-slate-200",
-        success: "border-transparent bg-emerald-50 text-emerald-700 border-emerald-200",
-        warning: "border-transparent bg-amber-50 text-amber-700 border-amber-200",
-        info: "border-transparent bg-blue-50 text-blue-700 border-blue-200",
+        default: "border-transparent bg-black text-white dark:bg-white dark:text-black shadow-xs",
+        secondary: "border-transparent bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700",
+        destructive: "border-transparent bg-slate-900 text-white dark:bg-white dark:text-black shadow-xs",
+        outline: "text-slate-900 dark:text-white border-slate-300 dark:border-slate-700",
+        success: "border-transparent bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700",
+        warning: "border-transparent bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-800",
+        info: "border-transparent bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700",
       },
     },
     defaultVariants: {

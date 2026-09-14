@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Mail, ArrowRight, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
+import { Mail, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,20 +41,20 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4 selection:bg-blue-600 selection:text-white relative overflow-hidden">
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-600/15 blur-[120px] rounded-full pointer-events-none" />
+    <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4 selection:bg-white selection:text-black relative overflow-hidden">
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-white/5 blur-[120px] rounded-full pointer-events-none" />
 
-      <div className="w-full max-w-md relative z-10">
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2.5 mb-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white font-black text-2xl shadow-lg shadow-blue-600/30">
+      <div className="w-full max-w-md space-y-6 relative z-10">
+        <div className="flex flex-col items-center text-center">
+          <Link href="/" className="flex items-center gap-2 mb-4 group">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-black font-black text-2xl shadow-xl">
               S
             </div>
             <div className="flex flex-col text-left">
               <span className="text-xl font-bold tracking-tight text-white">
                 SmartBiz
               </span>
-              <span className="text-xs text-slate-400">Security Recovery</span>
+              <span className="text-xs text-slate-400 font-mono">Security Recovery</span>
             </div>
           </Link>
           <h1 className="text-2xl font-bold text-white tracking-tight">Forgot Password</h1>
@@ -97,7 +97,7 @@ export default function ForgotPasswordPage() {
                     placeholder="name@company.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-9 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
+                    className="pl-9 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-white"
                   />
                 </div>
               </div>
@@ -106,16 +106,9 @@ export default function ForgotPasswordPage() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-10 bg-blue-600 hover:bg-blue-500 text-white font-medium shadow-md shadow-blue-600/20"
+                  className="w-full h-11 bg-white text-black hover:bg-slate-200 font-bold shadow-xs cursor-pointer"
                 >
-                  {loading ? (
-                    <span>Sending Code...</span>
-                  ) : (
-                    <span className="inline-flex items-center gap-2">
-                      Send Reset Code
-                      <ArrowRight className="h-4 w-4" />
-                    </span>
-                  )}
+                  {loading ? "Sending Code..." : "Send Reset Code"}
                 </Button>
               </div>
             </CardContent>
@@ -124,7 +117,7 @@ export default function ForgotPasswordPage() {
           <CardFooter className="pt-2 pb-6 border-t border-slate-800/80 flex justify-center text-xs text-slate-400">
             <Link
               href="/login"
-              className="inline-flex items-center gap-1.5 text-blue-400 hover:text-blue-300 transition-colors"
+              className="inline-flex items-center gap-1.5 text-white hover:underline transition-colors font-semibold"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               <span>Back to Login</span>

@@ -118,7 +118,7 @@ export default function SuppliersPage() {
       )}
 
       <PageHeader title="Suppliers" description="Manage vendor relationships and track payable balances.">
-        <Button size="sm" onClick={() => setCreateOpen(true)} className="gap-1.5 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button size="sm" onClick={() => setCreateOpen(true)} className="gap-1.5 bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold shadow-xs">
           <Plus className="h-4 w-4" /><span>Add Supplier</span>
         </Button>
       </PageHeader>
@@ -128,7 +128,7 @@ export default function SuppliersPage() {
         <Card className="border-slate-200 shadow-xs">
           <CardContent className="p-4 flex items-center justify-between">
             <div><p className="text-xs text-slate-500 uppercase font-semibold">Total Suppliers</p><p className="text-xl font-bold text-slate-900 mt-1">{suppliers.length}</p></div>
-            <div className="h-10 w-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><Truck className="h-5 w-5" /></div>
+            <div className="h-10 w-10 rounded-xl bg-black dark:bg-white text-white dark:text-black flex items-center justify-center shadow-xs"><Truck className="h-5 w-5" /></div>
           </CardContent>
         </Card>
         <Card className="border-amber-200 shadow-xs">
@@ -153,7 +153,7 @@ export default function SuppliersPage() {
       {/* Table */}
       {suppliers.length === 0 && !loading ? (
         <EmptyState icon={Truck} title="No Suppliers Yet" description="Add vendors to track purchase orders and payable balances." action={
-          <Button onClick={() => setCreateOpen(true)} className="gap-1.5 bg-blue-600 text-white"><Plus className="h-4 w-4" />Add Supplier</Button>
+          <Button onClick={() => setCreateOpen(true)} className="gap-1.5 bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold shadow-xs"><Plus className="h-4 w-4" />Add Supplier</Button>
         } />
       ) : (
         <Table>
@@ -218,7 +218,7 @@ export default function SuppliersPage() {
             <div className="space-y-1"><label className="text-xs font-medium text-slate-700">Notes</label><Textarea name="notes" value={formData.notes} onChange={handleFieldChange} placeholder="Primary tea supplier, 30-day credit terms..." rows={2} /></div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setCreateOpen(false)}>Cancel</Button>
-              <Button type="submit" disabled={creating} className="bg-blue-600 hover:bg-blue-700 text-white">{creating ? "Adding..." : "Add Supplier"}</Button>
+              <Button type="submit" disabled={creating} className="bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold">{creating ? "Adding..." : "Add Supplier"}</Button>
             </DialogFooter>
           </form>
         </DialogContent>

@@ -224,7 +224,7 @@ export default function ProductsPage() {
           <Plus className="h-3.5 w-3.5" />
           <span>New Category</span>
         </Button>
-        <Button size="sm" onClick={() => setCreateOpen(true)} className="gap-1.5 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button size="sm" onClick={() => setCreateOpen(true)} className="gap-1.5 bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold shadow-xs">
           <Plus className="h-4 w-4" />
           <span>Add Product</span>
         </Button>
@@ -266,7 +266,7 @@ export default function ProductsPage() {
           title="No Products Yet"
           description="Add your first product to start managing inventory and running POS sales."
           action={
-            <Button onClick={() => setCreateOpen(true)} className="gap-1.5 bg-blue-600 hover:bg-blue-700 text-white">
+            <Button onClick={() => setCreateOpen(true)} className="gap-1.5 bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold shadow-xs">
               <Plus className="h-4 w-4" />
               Add First Product
             </Button>
@@ -441,7 +441,7 @@ export default function ProductsPage() {
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setCreateOpen(false)}>Cancel</Button>
-              <Button type="submit" disabled={creating} className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Button type="submit" disabled={creating} className="bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold">
                 {creating ? "Creating..." : "Add Product"}
               </Button>
             </DialogFooter>
@@ -466,7 +466,7 @@ export default function ProductsPage() {
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setCatOpen(false)}>Cancel</Button>
-              <Button type="submit" disabled={catCreating} className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Button type="submit" disabled={catCreating} className="bg-black dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-slate-200 font-semibold">
                 {catCreating ? "Creating..." : "Create Category"}
               </Button>
             </DialogFooter>

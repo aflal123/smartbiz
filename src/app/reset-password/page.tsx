@@ -3,10 +3,10 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Lock, KeyRound, Mail, ArrowRight, AlertCircle, CheckCircle2, Eye, EyeOff } from "lucide-react";
+import { Lock, KeyRound, Mail, AlertCircle, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { resetPasswordAction } from "@/actions/auth";
 
 export default function ResetPasswordPage() {
@@ -73,130 +73,128 @@ function ResetPasswordContent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4 selection:bg-blue-600 selection:text-white relative overflow-hidden">
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-600/15 blur-[120px] rounded-full pointer-events-none" />
+    <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4 selection:bg-white selection:text-black relative overflow-hidden">
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-white/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2.5 mb-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white font-black text-2xl shadow-lg shadow-blue-600/30">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-black font-black text-2xl shadow-xl">
               S
             </div>
             <div className="flex flex-col text-left">
               <span className="text-xl font-bold tracking-tight text-white">
                 SmartBiz
               </span>
-              <span className="text-xs text-slate-400">Security Recovery</span>
+              <span className="text-xs text-slate-400 font-mono">
+                ENTERPRISE ERP
+              </span>
             </div>
           </Link>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Set New Password</h1>
-          <p className="text-sm text-slate-400 mt-1">Enter your reset code and choose a new password</p>
+          <h1 className="text-2xl font-extrabold tracking-tight text-white">
+            Set New Password
+          </h1>
+          <p className="mt-1 text-xs text-slate-400">
+            Enter your OTP code sent to your email to update credentials
+          </p>
         </div>
 
-        <Card className="border-slate-800 bg-slate-900/80 backdrop-blur-xl text-slate-100 shadow-2xl">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-base text-white">Reset Credentials</CardTitle>
-            <CardDescription className="text-slate-400 text-xs">
-              Your password must be at least 8 characters long
-            </CardDescription>
-          </CardHeader>
+        <Card className="border-slate-800 bg-slate-900/90 text-slate-100 shadow-2xl backdrop-blur-md">
+          <CardContent className="pt-6">
+            {error && (
+              <div className="mb-4 flex items-center gap-2 rounded-lg bg-rose-950/80 border border-rose-800 p-3 text-xs text-rose-300">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
 
-          <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4">
-              {error && (
-                <div className="flex items-start gap-2.5 rounded-lg bg-rose-950/50 border border-rose-800/80 p-3 text-sm text-rose-200">
-                  <AlertCircle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
-                  <span>{error}</span>
-                </div>
-              )}
+            {success && (
+              <div className="mb-4 flex items-center gap-2 rounded-lg bg-emerald-950/80 border border-emerald-800 p-3 text-xs text-emerald-300">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
+                <span>{success}</span>
+              </div>
+            )}
 
-              {success && (
-                <div className="flex items-start gap-2.5 rounded-lg bg-emerald-950/50 border border-emerald-800/80 p-3 text-sm text-emerald-200">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span>{success}</span>
-                </div>
-              )}
-
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-300">Email Address</label>
+                <label className="text-xs font-medium text-slate-300">
+                  Email Address *
+                </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
                   <Input
-                    type="email"
                     required
+                    type="email"
+                    placeholder="name@company.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-9 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
+                    className="pl-9 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-white"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-300">6-Digit Reset Code</label>
+                <label className="text-xs font-medium text-slate-300">
+                  6-Digit OTP Code *
+                </label>
                 <div className="relative">
                   <KeyRound className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
                   <Input
+                    required
                     type="text"
                     maxLength={6}
-                    required
-                    placeholder="000000"
+                    placeholder="123456"
                     value={otp}
                     onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-                    className="pl-9 font-mono tracking-widest bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
+                    className="pl-9 font-mono tracking-widest bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-white"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-300">New Password</label>
+                <label className="text-xs font-medium text-slate-300">
+                  New Password *
+                </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
                   <Input
-                    type={showPassword ? "text" : "password"}
                     required
+                    type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="pl-9 pr-10 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
+                    className="pl-9 pr-10 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-white"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-200 transition-colors focus:outline-none"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    className="absolute right-3 top-2.5 text-slate-500 hover:text-slate-300 cursor-pointer"
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-300">Confirm New Password</label>
+                <label className="text-xs font-medium text-slate-300">
+                  Confirm New Password *
+                </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
                   <Input
-                    type={showConfirmPassword ? "text" : "password"}
                     required
+                    type={showConfirmPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="pl-9 pr-10 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-blue-500"
+                    className="pl-9 pr-10 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 focus-visible:ring-white"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-200 transition-colors focus:outline-none"
-                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                    className="absolute right-3 top-2.5 text-slate-500 hover:text-slate-300 cursor-pointer"
                   >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
               </div>
@@ -205,24 +203,16 @@ function ResetPasswordContent() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-10 bg-blue-600 hover:bg-blue-500 text-white font-medium shadow-md shadow-blue-600/20"
+                  className="w-full h-11 bg-white text-black hover:bg-slate-200 font-bold shadow-xs cursor-pointer"
                 >
-                  {loading ? (
-                    <span>Updating Password...</span>
-                  ) : (
-                    <span className="inline-flex items-center gap-2">
-                      Save New Password
-                      <ArrowRight className="h-4 w-4" />
-                    </span>
-                  )}
+                  {loading ? "Updating Password..." : "Update Password & Sign In"}
                 </Button>
               </div>
-            </CardContent>
-          </form>
-
+            </form>
+          </CardContent>
           <CardFooter className="pt-2 pb-6 border-t border-slate-800/80 flex justify-center text-xs text-slate-400">
-            <Link href="/login" className="text-blue-400 hover:text-blue-300">
-              Return to Login
+            <Link href="/login" className="text-white hover:underline font-semibold">
+              Back to Sign In
             </Link>
           </CardFooter>
         </Card>

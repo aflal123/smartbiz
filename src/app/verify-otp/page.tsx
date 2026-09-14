@@ -3,10 +3,10 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { KeyRound, ArrowRight, AlertCircle, CheckCircle2, RotateCw } from "lucide-react";
+import { KeyRound, AlertCircle, CheckCircle2, RotateCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
 import { verifyRegistrationOtpAction, resendRegistrationOtpAction } from "@/actions/auth";
 
 export default function VerifyOtpPage() {
@@ -114,41 +114,43 @@ function VerifyOtpContent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4 selection:bg-blue-600 selection:text-white relative overflow-hidden">
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-600/15 blur-[120px] rounded-full pointer-events-none" />
+    <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4 selection:bg-white selection:text-black relative overflow-hidden">
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-96 h-96 bg-white/5 blur-[120px] rounded-full pointer-events-none" />
 
-      <div className="w-full max-w-md relative z-10">
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2.5 mb-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white font-black text-2xl shadow-lg shadow-blue-600/30">
+      <div className="w-full max-w-md space-y-6 relative z-10">
+        <div className="flex flex-col items-center text-center">
+          <Link href="/" className="flex items-center gap-2 mb-4 group">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-black font-black text-2xl shadow-xl">
               S
             </div>
             <div className="flex flex-col text-left">
               <span className="text-xl font-bold tracking-tight text-white">
                 SmartBiz
               </span>
-              <span className="text-xs text-slate-400">Security Verification</span>
+              <span className="text-[10px] text-slate-400 font-mono">
+                ENTERPRISE ERP
+              </span>
             </div>
           </Link>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Verify Your Account</h1>
-          <p className="text-sm text-slate-400 mt-1">
-            We sent a 6-digit code to <span className="text-blue-400 font-medium">{targetEmail || "your email"}</span>
+          <h1 className="text-2xl font-extrabold tracking-tight text-white">
+            Verify Email OTP
+          </h1>
+          <p className="mt-1 text-xs text-slate-400">
+            We sent a 6-digit code to <span className="text-white font-bold">{targetEmail || "your email"}</span>
           </p>
         </div>
 
-        <Card className="border-slate-800 bg-slate-900/80 backdrop-blur-xl text-slate-100 shadow-2xl">
-          <CardHeader className="pb-4 text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10 text-blue-400 mb-2">
+        <Card className="border-slate-800 bg-slate-900/90 text-slate-100 shadow-2xl backdrop-blur-md">
+          <CardContent className="pt-6 text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-black mb-4 shadow-xs">
               <KeyRound className="h-6 w-6" />
             </div>
-            <CardTitle className="text-lg text-white">Enter 6-Digit Code</CardTitle>
-            <CardDescription className="text-slate-400 text-xs">
+            <h3 className="text-lg font-bold text-white">Enter 6-Digit Code</h3>
+            <CardDescription className="text-slate-400 text-xs mt-1">
               Check your inbox or spam folder for your confirmation PIN
             </CardDescription>
-          </CardHeader>
 
-          <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4 mt-6 text-left">
               {error && (
                 <div className="flex items-start gap-2.5 rounded-lg bg-rose-950/50 border border-rose-800/80 p-3 text-sm text-rose-200">
                   <AlertCircle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
@@ -172,33 +174,24 @@ function VerifyOtpContent() {
                   placeholder="000000"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-                  className="h-14 text-center tracking-[0.6em] text-2xl font-mono font-bold bg-slate-950 border-slate-800 text-white placeholder:text-slate-700 focus-visible:ring-blue-500"
+                  className="h-14 text-center tracking-[0.6em] text-2xl font-mono font-bold bg-slate-950 border-slate-800 text-white placeholder:text-slate-700 focus-visible:ring-white"
                 />
               </div>
 
-              <div className="pt-2">
-                <Button
-                  type="submit"
-                  disabled={loading || otp.length !== 6}
-                  className="w-full h-11 bg-blue-600 hover:bg-blue-500 text-white font-medium shadow-md shadow-blue-600/20"
-                >
-                  {loading ? (
-                    <span>Verifying Code...</span>
-                  ) : (
-                    <span className="inline-flex items-center gap-2">
-                      Verify & Activate Store
-                      <ArrowRight className="h-4 w-4" />
-                    </span>
-                  )}
-                </Button>
-              </div>
+              <Button
+                type="submit"
+                disabled={loading || otp.length !== 6}
+                className="w-full h-11 bg-white text-black hover:bg-slate-200 font-bold shadow-xs cursor-pointer"
+              >
+                {loading ? "Verifying Code..." : "Verify & Activate Store"}
+              </Button>
 
               <div className="pt-3 text-center">
                 <button
                   type="button"
                   disabled={resendCooldown > 0}
                   onClick={handleResend}
-                  className="text-xs text-slate-400 hover:text-slate-200 disabled:opacity-50 disabled:pointer-events-none inline-flex items-center gap-1.5 transition-colors"
+                  className="text-xs text-slate-400 hover:text-slate-200 disabled:opacity-50 disabled:pointer-events-none inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <RotateCw className="h-3 w-3" />
                   <span>
@@ -208,11 +201,11 @@ function VerifyOtpContent() {
                   </span>
                 </button>
               </div>
-            </CardContent>
-          </form>
+            </form>
+          </CardContent>
 
           <CardFooter className="pt-2 pb-6 border-t border-slate-800/80 flex justify-center text-xs text-slate-400">
-            <Link href="/login" className="text-blue-400 hover:text-blue-300">
+            <Link href="/login" className="text-white hover:underline font-semibold">
               Return to Login
             </Link>
           </CardFooter>

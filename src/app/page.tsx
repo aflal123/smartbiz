@@ -18,12 +18,12 @@ import { Button } from "@/components/ui/button";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50 selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-slate-950 text-slate-50 selection:bg-white selection:text-black">
       {/* Top Navbar */}
-      <header className="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white font-black text-xl shadow-lg shadow-blue-600/30">
+      <header className="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-slate-800/80 bg-slate-950/80 px-6 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto flex h-16 items-center justify-between w-full">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-black font-black text-xl shadow-lg">
               S
             </div>
             <div className="flex flex-col">
@@ -58,7 +58,7 @@ export default function LandingPage() {
               </Button>
             </Link>
             <Link href="/register">
-              <Button className="bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-600/20">
+              <Button className="bg-white text-black hover:bg-slate-200 font-bold shadow-xs">
                 Get Started Free
               </Button>
             </Link>
@@ -69,34 +69,30 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative pt-20 pb-28 overflow-hidden">
         {/* Glow gradients */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-blue-600/20 blur-[130px] rounded-full pointer-events-none" />
-        <div className="absolute top-1/3 right-1/4 w-[400px] h-[300px] bg-purple-600/15 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-white/5 blur-[130px] rounded-full pointer-events-none" />
 
-        <div className="relative max-w-5xl mx-auto px-6 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold text-blue-300 mb-8 backdrop-blur-xs">
-            <Sparkles className="h-3.5 w-3.5 text-blue-400" />
-            <span>Next-Generation Multi-Tenant ERP & POS for SMEs</span>
+        <div className="relative z-10 max-w-4xl mx-auto text-center px-6">
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-4 py-1.5 text-xs font-semibold text-white mb-8 backdrop-blur-xs">
+            <Sparkles className="h-3.5 w-3.5 text-white" />
+            <span>AI-Powered SME Business Management Platform</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-tight sm:leading-none">
-            Run your business with{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400">
-              real profit clarity
-            </span>{" "}
-            and AI intelligence.
+          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
+            Run Your SME Store With{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">
+              AI Precision & Real-Time Sync
+            </span>
           </h1>
 
-          <p className="mt-6 text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            Instant point-of-sale checkout, concurrent stock ledgering, accurate
-            COGS & profit math, multi-tenant security, and built-in OpenAI
-            business advisors.
+          <p className="mt-6 text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            All-in-one Cloud POS, Multi-store Inventory Ledger, AI Executive Forecasting, and Real-time P&L reporting built for SME merchants.
           </p>
 
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
             <Link href="/register" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full h-12 px-8 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-base shadow-lg shadow-blue-600/25">
-                Launch Your Business
-                <ArrowRight className="h-4 w-4 ml-1" />
+              <Button size="lg" className="w-full h-12 px-8 bg-white text-black hover:bg-slate-200 font-extrabold text-base shadow-xl">
+                Start Free Trial
+                <ArrowRight className="h-5 w-5 ml-2" />
               </Button>
             </Link>
             <Link href="/dashboard" className="w-full sm:w-auto">
@@ -226,16 +222,17 @@ export default function LandingPage() {
       {/* CTA Footer */}
       <footer className="py-16 border-t border-slate-800 bg-slate-950 text-center">
         <div className="max-w-4xl mx-auto px-6">
-          <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-            Ready to upgrade your business operations?
-          </h3>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
+            Ready to Upgrade Your Business?
+          </h2>
           <p className="text-slate-400 mb-8 max-w-lg mx-auto">
-            Get started in 60 seconds. Set up your store, add inventory, and start ringing sales right now.
+            Join SME merchants using SmartBiz for real-time inventory, cloud POS, and AI profitability.
           </p>
           <div className="flex justify-center gap-4">
             <Link href="/register">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-500 text-white font-semibold">
-                Create Free Account
+              <Button size="lg" className="bg-white text-black hover:bg-slate-200 font-extrabold shadow-xl">
+                Get Started Free Now
+                <ArrowRight className="h-5 w-5 ml-2" />
               </Button>
             </Link>
             <Link href="/login">
