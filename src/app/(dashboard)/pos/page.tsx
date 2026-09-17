@@ -79,7 +79,14 @@ export default function PosPage() {
         const res = await getProductsAction({ limit: 100 });
         if (res.success && res.data) {
           const fetched = (res.data as any).products || [];
-          setProducts(fetched);
+          setProducts(
+            fetched.map((p: any) => ({
+              ...p,
+              sellingPrice: Number(p.sellingPrice) || 0,
+              costPrice: Number(p.costPrice) || 0,
+              stockQuantity: Number(p.stockQuantity) || 0,
+            }))
+          );
         }
       } catch {
         // Handle error gracefully
@@ -125,7 +132,7 @@ export default function PosPage() {
             : item
         );
       }
-      return [...prev, { product, quantity: 1, unitPrice: product.sellingPrice }];
+      return [...prev, { product, quantity: 1, unitPrice: Number(product.sellingPrice) || 0 }];
     });
   };
 
@@ -197,13 +204,13 @@ export default function PosPage() {
     const payload = {
       items: cart.map((i) => ({
         productId: i.product.id,
-        quantity: i.quantity,
-        unitSellingPrice: i.unitPrice,
+        quantity: Number(i.quantity) || 1,
+        unitSellingPrice: Number(i.unitPrice) || 0,
         discount: 0,
       })),
-      discountAmount,
-      taxRate,
-      amountPaid: paymentMethod === "CREDIT" ? 0 : tenderedNumeric,
+      discountAmount: Number(discountAmount) || 0,
+      taxRate: Number(taxRate) || 0,
+      amountPaid: paymentMethod === "CREDIT" ? 0 : (Number(tenderedNumeric) || 0),
       paymentMethod,
       status: paymentMethod === "CREDIT" ? "UNPAID" : "COMPLETED",
       notes: `POS order by ${customerName}`,
@@ -220,8 +227,8 @@ export default function PosPage() {
           customerName: sale.customer?.name || customerName,
           items: sale.items?.map((item: any) => ({
             product: { name: item.product?.name || "Item", sku: item.product?.sku || "" },
-            quantity: item.quantity,
-            unitPrice: item.unitSellingPrice,
+            quantity: Number(item.quantity) || 1,
+            unitPrice: Number(item.unitSellingPrice) || 0,
           })) || [...cart],
           subtotal: Number(sale.subtotal || subtotal),
           discountAmount: Number(sale.discountAmount || discountAmount),
@@ -235,7 +242,15 @@ export default function PosPage() {
         // Refresh inventory quantities from database
         const prodRes = await getProductsAction({ limit: 100 });
         if (prodRes.success && prodRes.data) {
-          setProducts((prodRes.data as any).products || []);
+          const fetched = (prodRes.data as any).products || [];
+          setProducts(
+            fetched.map((p: any) => ({
+              ...p,
+              sellingPrice: Number(p.sellingPrice) || 0,
+              costPrice: Number(p.costPrice) || 0,
+              stockQuantity: Number(p.stockQuantity) || 0,
+            }))
+          );
         }
 
         setCheckoutOpen(false);
