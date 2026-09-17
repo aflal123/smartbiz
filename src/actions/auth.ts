@@ -319,6 +319,19 @@ export async function loginAction(
     };
   } catch (error) {
     console.error("Login error:", error);
+    const msg = error instanceof Error ? error.message : "";
+    if (
+      msg.includes("Can't reach database") ||
+      msg.includes("P1001") ||
+      msg.includes("does not exist in the current database") ||
+      msg.includes("P2021") ||
+      msg.includes("DATABASE_URL")
+    ) {
+      return {
+        success: false,
+        message: "Database connection failed. Please check DATABASE_URL and ensure database migrations are pushed.",
+      };
+    }
     return {
       success: false,
       message: "An unexpected error occurred during login. Please try again.",
@@ -374,6 +387,19 @@ export async function forgotPasswordAction(formData: unknown): Promise<ActionRes
     };
   } catch (error) {
     console.error("Forgot password error:", error);
+    const msg = error instanceof Error ? error.message : "";
+    if (
+      msg.includes("Can't reach database") ||
+      msg.includes("P1001") ||
+      msg.includes("does not exist in the current database") ||
+      msg.includes("P2021") ||
+      msg.includes("DATABASE_URL")
+    ) {
+      return {
+        success: false,
+        message: "Database connection failed. Please check DATABASE_URL in environment variables.",
+      };
+    }
     return {
       success: false,
       message: "Unable to process request. Please try again later.",
