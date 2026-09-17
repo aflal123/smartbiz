@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
@@ -20,20 +22,25 @@ export function AppShell({
   currency = "LKR",
   lowStockCount = 0,
 }: AppShellProps) {
+  const [mobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-black text-slate-900 dark:text-slate-100 transition-colors duration-200 selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
+    <div className="min-h-screen bg-neutral-50 dark:bg-black text-black dark:text-neutral-100 transition-colors duration-200 selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
       <Sidebar
         businessName={businessName}
         userName={userName}
         userRole={userRole}
+        mobileOpen={mobileSidebarOpen}
+        onMobileClose={() => setMobileSidebarOpen(false)}
       />
       <div className="flex flex-col md:pl-64 min-h-screen">
         <Header
           businessName={businessName}
           currency={currency}
           lowStockCount={lowStockCount}
+          onMenuToggle={() => setMobileSidebarOpen(true)}
         />
-        <main className="flex-1 p-3 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto pb-20 md:pb-8">
+        <main className="flex-1 p-3 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto pb-24 md:pb-8">
           {children}
         </main>
       </div>

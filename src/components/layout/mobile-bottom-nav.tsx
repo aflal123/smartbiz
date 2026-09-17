@@ -18,15 +18,18 @@ const navItems = [
   { href: "/pos", label: "POS", icon: ShoppingCart },
   { href: "/products", label: "Products", icon: Package },
   { href: "/sales", label: "Sales", icon: Receipt },
-  { href: "/ai", label: "AI Advisor", icon: Sparkles },
+  { href: "/ai", label: "AI Suite", icon: Sparkles },
 ];
 
 export function MobileBottomNav() {
   const pathname = usePathname();
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 block md:hidden bg-white/95 dark:bg-black/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 px-2 py-1.5 shadow-2xl transition-colors">
-      <div className="flex items-center justify-around">
+    <nav
+      aria-label="Mobile Bottom Navigation"
+      className="fixed bottom-0 left-0 right-0 z-40 block md:hidden bg-white/95 dark:bg-black/95 backdrop-blur-lg border-t border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 px-2 pt-1 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-lg transition-colors"
+    >
+      <div className="flex items-center justify-around max-w-lg mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive =
@@ -38,23 +41,32 @@ export function MobileBottomNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "relative flex flex-col items-center justify-center py-1 px-2 min-w-[60px] rounded-xl transition-all duration-200",
-                isActive ? "text-slate-900 dark:text-white font-bold" : "hover:text-slate-900 dark:hover:text-slate-200"
+                "relative flex flex-col items-center justify-center py-1.5 px-2.5 min-w-[58px] rounded-xl transition-all duration-200 select-none",
+                isActive
+                  ? "text-black dark:text-white font-bold"
+                  : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
               )}
             >
               {isActive && (
                 <motion.div
                   layoutId="activeTabBadge"
-                  className="absolute inset-0 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-xl"
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  className="absolute inset-0 bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl"
+                  transition={{ type: "spring", stiffness: 450, damping: 35 }}
                 />
               )}
-              <Icon className={cn("h-5 w-5 mb-0.5 relative z-10", isActive && "text-slate-950 dark:text-white scale-110")} />
-              <span className="text-[10px] tracking-tight relative z-10 font-semibold">{item.label}</span>
+              <Icon
+                className={cn(
+                  "h-5 w-5 mb-0.5 relative z-10 transition-transform duration-200",
+                  isActive && "scale-110 text-black dark:text-white stroke-[2.25]"
+                )}
+              />
+              <span className="text-[10px] tracking-tight relative z-10 font-semibold truncate max-w-[60px]">
+                {item.label}
+              </span>
             </Link>
           );
         })}
       </div>
-    </div>
+    </nav>
   );
 }
