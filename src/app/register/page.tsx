@@ -27,6 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { registerAction } from "@/actions/auth";
+import { SmartBizLogo } from "@/components/brand/logo";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -105,19 +106,9 @@ export default function RegisterPage() {
       <div className="w-full max-w-lg relative z-10 my-8">
         {/* Brand Header */}
         <div className="text-center mb-6">
-          <Link href="/" className="inline-flex items-center gap-2.5 mb-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-black font-black text-xl shadow-xl">
-              S
-            </div>
-            <div className="flex flex-col text-left">
-              <span className="text-lg font-bold tracking-tight text-white">
-                SmartBiz
-              </span>
-              <span className="text-[11px] text-slate-400">Enterprise ERP & POS Suite</span>
-            </div>
-          </Link>
+          <SmartBizLogo size="lg" showWordmark={true} href="/" className="mb-3" />
           <h1 className="text-2xl font-bold text-white tracking-tight">Create your Business Account</h1>
-          <p className="text-sm text-slate-400 mt-0.5">Start running sales and tracking profits today</p>
+          <p className="text-sm text-neutral-400 mt-0.5">Start running sales and tracking profits today</p>
         </div>
 
         <Card className="border-slate-800 bg-slate-900/85 backdrop-blur-xl text-slate-100 shadow-2xl">

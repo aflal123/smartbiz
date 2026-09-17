@@ -21,6 +21,9 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { SmartBizLogo } from "@/components/brand/logo";
+import { logoutAction } from "@/actions/auth";
+
 interface NavigationItem {
   name: string;
   href: string;
@@ -86,16 +89,14 @@ export function Sidebar({
     <div className="flex h-full flex-col justify-between bg-white dark:bg-black text-black dark:text-neutral-200 border-r border-neutral-200 dark:border-neutral-800 transition-colors">
       {/* Brand Header */}
       <div>
-        <div className="flex h-16 items-center justify-between px-5 border-b border-neutral-200 dark:border-neutral-800">
+        <div className="flex h-16 items-center justify-between px-4 border-b border-neutral-200 dark:border-neutral-800">
           <Link href="/dashboard" onClick={handleClose} className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-black dark:bg-white text-white dark:text-black font-black text-lg shadow-xs">
-              S
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-bold tracking-tight text-black dark:text-white">
+            <SmartBizLogo size="sm" showWordmark={false} />
+            <div className="flex flex-col min-w-0">
+              <span className="text-sm font-bold tracking-tight text-black dark:text-white leading-none">
                 SmartBiz
               </span>
-              <span className="text-xs text-neutral-500 dark:text-neutral-400 truncate max-w-[140px]">
+              <span className="text-[11px] text-neutral-500 dark:text-neutral-400 truncate max-w-[130px]">
                 {businessName}
               </span>
             </div>
@@ -190,26 +191,27 @@ export function Sidebar({
               </span>
             </div>
           </div>
-          {onLogout ? (
-            <button
-              type="button"
-              onClick={onLogout}
-              title="Log out"
-              className="p-1.5 rounded-lg text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
-          ) : (
-            <form action="/api/v1/auth/me" method="DELETE">
-              <button
-                type="submit"
-                title="Log out"
-                className="p-1.5 rounded-lg text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
-              >
-                <LogOut className="h-4 w-4" />
-              </button>
-            </form>
-          )}
+          <button
+            type="button"
+            onClick={async () => {
+              if (onLogout) {
+                onLogout();
+                return;
+              }
+              try {
+                await logoutAction();
+              } catch (err) {
+                console.error("Logout error:", err);
+              } finally {
+                window.location.href = "/login";
+              }
+            }}
+            title="Log out"
+            aria-label="Log out"
+            className="p-1.5 rounded-lg text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
         </div>
       </div>
     </div>

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
 import { verifyRegistrationOtpAction, resendRegistrationOtpAction } from "@/actions/auth";
+import { SmartBizLogo } from "@/components/brand/logo";
 
 export default function VerifyOtpPage() {
   return (
@@ -119,23 +120,11 @@ function VerifyOtpContent() {
 
       <div className="w-full max-w-md space-y-6 relative z-10">
         <div className="flex flex-col items-center text-center">
-          <Link href="/" className="flex items-center gap-2 mb-4 group">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-black font-black text-2xl shadow-xl">
-              S
-            </div>
-            <div className="flex flex-col text-left">
-              <span className="text-xl font-bold tracking-tight text-white">
-                SmartBiz
-              </span>
-              <span className="text-[10px] text-slate-400 font-mono">
-                ENTERPRISE ERP
-              </span>
-            </div>
-          </Link>
+          <SmartBizLogo size="lg" showWordmark={true} href="/" className="mb-4" />
           <h1 className="text-2xl font-extrabold tracking-tight text-white">
             Verify Email OTP
           </h1>
-          <p className="mt-1 text-xs text-slate-400">
+          <p className="mt-1 text-xs text-neutral-400">
             We sent a 6-digit code to <span className="text-white font-bold">{targetEmail || "your email"}</span>
           </p>
         </div>

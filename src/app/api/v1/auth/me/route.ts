@@ -38,3 +38,22 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  const { clearAuthCookie } = await import("@/lib/auth/jwt");
+  await clearAuthCookie();
+
+  const acceptsHtml = request.headers.get("accept")?.includes("text/html");
+  if (acceptsHtml) {
+    return NextResponse.redirect(new URL("/login", request.url), { status: 303 });
+  }
+
+  return NextResponse.json({
+    success: true,
+    message: "Logged out successfully",
+  });
+}
+
+export async function POST(request: NextRequest) {
+  return DELETE(request);
+}

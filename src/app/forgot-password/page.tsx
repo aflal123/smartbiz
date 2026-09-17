@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { forgotPasswordAction } from "@/actions/auth";
 
+import { SmartBizLogo } from "@/components/brand/logo";
+
 export default function ForgotPasswordPage() {
   const router = useRouter();
   const [email, setEmail] = React.useState("");
@@ -46,19 +48,9 @@ export default function ForgotPasswordPage() {
 
       <div className="w-full max-w-md space-y-6 relative z-10">
         <div className="flex flex-col items-center text-center">
-          <Link href="/" className="flex items-center gap-2 mb-4 group">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-black font-black text-2xl shadow-xl">
-              S
-            </div>
-            <div className="flex flex-col text-left">
-              <span className="text-xl font-bold tracking-tight text-white">
-                SmartBiz
-              </span>
-              <span className="text-xs text-slate-400 font-mono">Security Recovery</span>
-            </div>
-          </Link>
+          <SmartBizLogo size="lg" showWordmark={true} href="/" className="mb-4" />
           <h1 className="text-2xl font-bold text-white tracking-tight">Forgot Password</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-neutral-400 mt-1">
             Enter your registered email to receive a password reset code
           </p>
         </div>
